@@ -1,10 +1,11 @@
 {
   "name": "@moses-cli/core",
   "version": "1.0.0",
-  "description": "🔍 CLI para validação automática de Merge Requests do GitLab com IA",
+  "description": "Thou shalt not break master",
   "type": "module",
   "bin": {
-    "moses": "./bin/moses.js"
+    "moses": "./bin/moses.js",
+    "lourran": "./bin/moses.js"
   },
   "engines": {
     "node": ">=18"
@@ -22,11 +23,11 @@
     "copilot",
     "claude"
   ],
-  "author": "Luizalabs",
+  "author": "stanleygomes",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.luizalabs.com/luizalabs/moses-cli"
+    "url": "https://github.com/stanleygomes/moses"
   },
   "files": [
     "bin",
