@@ -1,0 +1,46 @@
+{
+  "name": "@moses-cli/core",
+  "version": "1.0.0",
+  "description": "🔍 CLI para validação automática de Merge Requests do GitLab com IA",
+  "type": "module",
+  "bin": {
+    "moses": "./bin/moses.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node ./bin/moses.js",
+    "test": "echo \"No tests specified\""
+  },
+  "keywords": [
+    "gitlab",
+    "merge-request",
+    "code-review",
+    "ai",
+    "cli",
+    "copilot",
+    "claude"
+  ],
+  "author": "Luizalabs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.luizalabs.com/luizalabs/moses-cli"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^7.3.2",
+    "axios": "^1.11.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.4.1",
+    "commander": "^12.1.0",
+    "dayjs": "^1.11.13",
+    "figlet": "^1.8.2",
+    "ora": "^8.1.1"
+  }
+}
