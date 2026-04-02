@@ -8,15 +8,15 @@ const program = new Command();
 
 program
   .name('moses')
-  .description('Validação automática de Merge Requests do GitLab com IA')
+  .description('Automatic GitLab Merge Request validation with AI')
   .version('1.0.0');
 
-program.command('init').description('Setup inicial interativo').action(runInit);
+program.command('init').description('Interactive initial setup').action(runInit);
 
 program
   .command('validate')
-  .description('Valida um Merge Request do GitLab')
-  .argument('<url>', 'URL do Merge Request do GitLab')
+  .description('Validate a GitLab Merge Request')
+  .argument('<url>', 'GitLab Merge Request URL')
   .action(runValidate);
 
 program.parseAsync(process.argv);
