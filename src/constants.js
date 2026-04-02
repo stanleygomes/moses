@@ -5,10 +5,10 @@ export const DEFAULT_CONFIG_DIR = "~/.config/moses";
 export const DEFAULT_OUTPUT_DIR = "~/.config/moses/reviews";
 
 export const MESSAGES = {
-  welcome: "🚀 Bem-vindo ao moses! Vamos configurar sua CLI.",
-  done: "✅ Configuração concluída!",
-  next: "💡 Próximo passo: moses validate <url-do-mr>",
-  noConfig: "Configuração não encontrada. Rode: moses init",
+  welcome: "🚀 Welcome to moses! Let's set up your CLI.",
+  done: "✅ Setup completed!",
+  next: "💡 Next step: moses validate <mr-url>",
+  noConfig: "Configuration not found. Run: moses init",
 };
 
 export const EMOJIS = {

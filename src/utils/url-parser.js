@@ -5,7 +5,7 @@ export function parseMergeRequestUrl(url) {
   const match = url.match(URL_REGEX);
   if (!match?.groups) {
     throw new Error(
-      'URL inválida. Formato esperado: https://<host>/<group>/<project>/-/merge_requests/<iid>',
+      'Invalid URL. Expected format: https://<host>/<group>/<project>/-/merge_requests/<iid>',
     );
   }
   const { host, projectPath, mrIid } = match.groups;

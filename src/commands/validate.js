@@ -25,14 +25,14 @@ function findGitlabConfig(config, host) {
 
 export async function runValidate(url) {
   display.banner();
-  display.info(`🔗 Analisando: ${url}`);
+  display.info(`🔗 Analyzing: ${url}`);
 
   let config;
   try {
     config = await readConfig();
     const permissionStatus = await checkAndFixConfigPermissions();
     if (permissionStatus.fixed) {
-      display.warn('Permissões do config estavam incorretas e foram corrigidas para 600.');
+      display.warn('Config permissions were incorrect and have been fixed to 600.');
     }
   } catch {
     display.error(MESSAGES.noConfig);
@@ -49,31 +49,31 @@ export async function runValidate(url) {
 
   const gitlabConfig = findGitlabConfig(config, parsedUrl.host);
   if (!gitlabConfig) {
-    display.error(`Nenhuma instância GitLab configurada para host: ${parsedUrl.host}`);
+    display.error(`No GitLab instance configured for host: ${parsedUrl.host}`);
     return;
   }
 
-  const spinner = display.spinner('Buscando dados do MR...');
+  const spinner = display.spinner('Fetching MR data...');
   let data;
   try {
     data = await getMergeRequestData(gitlabConfig.url, gitlabConfig.token, parsedUrl.projectId, parsedUrl.mrIid);
-    spinner.succeed(`MR #${data.mr.iid} — "${data.mr.title}" carregado`);
+    spinner.succeed(`MR #${data.mr.iid} — "${data.mr.title}" loaded`);
   } catch (error) {
-    spinner.fail('Falha ao buscar dados do MR.');
+    spinner.fail('Failed to fetch MR data.');
     if (error?.response?.status === 404) {
-      display.error('MR não encontrado (404). Verifique URL e acesso (VPN, permissões).');
+      display.error('MR not found (404). Check URL and access (VPN, permissions).');
       return;
     }
-    display.error(`Erro: ${error.message}`);
+    display.error(`Error: ${error.message}`);
     return;
   }
 
-  display.info(`👤 Autor:    ${data.mr.author?.name ?? data.mr.author?.username ?? 'desconhecido'}`);
+  display.info(`👤 Author:   ${data.mr.author?.name ?? data.mr.author?.username ?? 'unknown'}`);
   display.info(`🌿 Branch:   ${data.mr.source_branch} → ${data.mr.target_branch}`);
-  display.info(`📅 Data:     ${dayjs(data.mr.created_at).format('YYYY-MM-DD')}`);
-  display.info(`📊 Stats:    ${data.diffs.length} arquivos | changes_count: ${data.mr.changes_count ?? '?'}`);
+  display.info(`📅 Date:     ${dayjs(data.mr.created_at).format('YYYY-MM-DD')}`);
+  display.info(`📊 Stats:    ${data.diffs.length} files | changes_count: ${data.mr.changes_count ?? '?'}`);
 
-  const markdownSpinner = display.spinner('Gerando markdown do diff...');
+  const markdownSpinner = display.spinner('Generating diff markdown...');
   try {
     const markdown = buildMergeRequestMarkdown({
       mr: data.mr,
@@ -87,9 +87,9 @@ export async function runValidate(url) {
     const fileName = `mr-${data.mr.iid}-${dayjs().format('YYYY-MM-DD')}.md`;
     const fullPath = path.join(outputDir, fileName);
     await fs.writeFile(fullPath, markdown, 'utf-8');
-    markdownSpinner.succeed(`Diff salvo em: ${fullPath}`);
+    markdownSpinner.succeed(`Diff saved at: ${fullPath}`);
 
-    display.info('\n🤖 Iniciando revisão com ferramenta de IA...');
+    display.info('\n🤖 Starting review with AI tool...');
     display.info('────────────────────────────────────────────────────────');
 
     await new Promise((resolve, reject) => {
@@ -98,16 +98,16 @@ export async function runValidate(url) {
         onStderr: (chunk) => display.streamLine(chunk),
         onClose: (code) => {
           if (code === 0) resolve();
-          else reject(new Error(`Processo de IA encerrou com código ${code}`));
+          else reject(new Error(`AI process exited with code ${code}`));
         },
         onError: reject,
       });
     });
 
     display.info('\n────────────────────────────────────────────────────────');
-    display.success('Revisão concluída!');
+    display.success('Review completed!');
   } catch (error) {
-    markdownSpinner.fail('Falha ao gerar markdown ou executar revisão de IA.');
+    markdownSpinner.fail('Failed to generate markdown or run AI review.');
     display.error(error.message);
   }
 }

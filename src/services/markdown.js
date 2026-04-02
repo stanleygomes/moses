@@ -18,26 +18,26 @@ export function buildMergeRequestMarkdown({ mr, diffs, commits, url }) {
 
   return `# MR #${mr.iid} — ${mr.title}
 
-**Autor:** @${mr.author?.username ?? 'desconhecido'}  
+**Author:** @${mr.author?.username ?? 'unknown'}  
 **Branch:** ${mr.source_branch} → ${mr.target_branch}  
-**Data:** ${createdAt}  
+**Date:** ${createdAt}  
 **URL:** ${url}
 
-## 📊 Estatísticas
+## 📊 Statistics
 
-- Arquivos alterados: ${changedFiles}
-- Mudanças (GitLab): ${additions}
+- Changed files: ${changedFiles}
+- Changes (GitLab): ${additions}
 
-## 📝 Descrição
+## 📝 Description
 
-${mr.description ?? '_Sem descrição_'}
+${mr.description ?? '_No description_'}
 
 ## 📦 Commits
 
-${commitLines || '_Sem commits_'}
+${commitLines || '_No commits_'}
 
 ## 🔍 Diffs
 
-${diffSections || '_Sem diffs_'}
+${diffSections || '_No diffs_'}
 `;
 }

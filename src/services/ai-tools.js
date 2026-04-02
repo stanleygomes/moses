@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import { AI_TOOLS } from '../constants.js';
 
 function buildPrompt(markdownContent) {
-  return `Você é um revisor de código sênior. Analise o diff abaixo de um Merge Request e forneça comentários técnicos detalhados sobre: qualidade do código, possíveis bugs, segurança, performance, boas práticas e sugestões de melhoria.
+  return `You are a senior code reviewer. Analyze the Merge Request diff below and provide detailed technical feedback on: code quality, potential bugs, security, performance, best practices, and improvement suggestions.
 
 ${markdownContent}`;
 }
@@ -10,7 +10,7 @@ ${markdownContent}`;
 export function runAiReview(toolKey, markdownContent, handlers = {}) {
   const tool = AI_TOOLS.find((item) => item.key === toolKey);
   if (!tool) {
-    throw new Error(`Ferramenta de IA inválida: ${toolKey}`);
+    throw new Error(`Invalid AI tool: ${toolKey}`);
   }
 
   const prompt = buildPrompt(markdownContent);

@@ -8,10 +8,10 @@ import { validateGitlabUrl } from '../utils/url-parser.js';
 
 async function chooseGitlabBaseUrl() {
   const gitlabType = await select({
-    message: 'Qual GitLab você deseja usar?',
+    message: 'Which GitLab do you want to use?',
     choices: [
-      { name: 'GitLab.com (gitlab.com) — Padrão', value: 'default' },
-      { name: 'GitLab Self-Hosted (informe a URL customizada)', value: 'self' },
+      { name: 'GitLab.com (gitlab.com) — Default', value: 'default' },
+      { name: 'Self-Hosted GitLab (provide a custom URL)', value: 'self' },
     ],
   });
 
@@ -20,35 +20,35 @@ async function chooseGitlabBaseUrl() {
   }
 
   while (true) {
-    const url = await input({ message: 'URL do GitLab:', default: 'https://gitlab.seu-dominio.com' });
+    const url = await input({ message: 'GitLab URL:', default: 'https://gitlab.your-domain.com' });
     if (validateGitlabUrl(url)) return url;
-    display.error('URL inválida. Use https:// e um domínio válido.');
+    display.error('Invalid URL. Use https:// and a valid domain.');
   }
 }
 
 async function chooseAiTool() {
   while (true) {
     const chosen = await select({
-      message: 'Escolha a ferramenta de IA para revisão:',
+      message: 'Choose the AI tool for review:',
       choices: AI_TOOLS.map((tool) => ({ name: tool.name, value: tool.key })),
     });
 
     const toolInfo = AI_TOOLS.find((tool) => tool.key === chosen);
-    const toolSpinner = display.spinner(`Verificando instalação do ${toolInfo.name}...`);
+    const toolSpinner = display.spinner(`Checking ${toolInfo.name} installation...`);
     const validation = validateToolInstallation(chosen);
     toolSpinner.stop();
 
     if (validation.installed) {
-      display.success(`${toolInfo.name} encontrado em ${validation.path}`);
+      display.success(`${toolInfo.name} found at ${validation.path}`);
       return chosen;
     }
 
-    display.error(`${toolInfo.name} não encontrado!`);
-    display.info(`\n📦 Instale com:\n   ${validation.installCmd}`);
-    display.info(`\n📖 Documentação: ${validation.installUrl}\n`);
-    const retry = await confirm({ message: 'Deseja escolher outra ferramenta?', default: true });
+    display.error(`${toolInfo.name} not found!`);
+    display.info(`\n📦 Install with:\n   ${validation.installCmd}`);
+    display.info(`\n📖 Documentation: ${validation.installUrl}\n`);
+    const retry = await confirm({ message: 'Do you want to choose another tool?', default: true });
     if (!retry) {
-      throw new Error('Ferramenta de IA não instalada. Instale uma ferramenta suportada e rode novamente.');
+      throw new Error('AI tool not installed. Install a supported tool and run again.');
     }
   }
 }
@@ -62,25 +62,25 @@ export async function runInit() {
     existingConfig = await readConfig();
     const permissionStatus = await checkAndFixConfigPermissions();
     if (permissionStatus.fixed) {
-      display.warn(`Permissões corrigidas automaticamente para 600 em ${getConfigPath()}`);
+      display.warn(`Permissions were automatically fixed to 600 at ${getConfigPath()}`);
     }
   } catch {}
 
   if (existingConfig) {
     const overwrite = await confirm({
-      message: 'Configuração existente encontrada. Deseja sobrescrever/adicionar nova instância?',
+      message: 'Existing configuration found. Do you want to overwrite/add a new instance?',
       default: true,
     });
     if (!overwrite) {
-      display.info('Nenhuma alteração aplicada.');
+      display.info('No changes applied.');
       return;
     }
   }
 
-  display.section('📋 CONFIGURAÇÃO DO GITLAB');
+  display.section('📋 GITLAB CONFIGURATION');
 
   const gitlabName = await input({
-    message: 'Nome desta instância:',
+    message: 'Instance name:',
     default: existingConfig?.defaultGitlab ?? 'gitlab-main',
   });
   const gitlabUrl = await chooseGitlabBaseUrl();
@@ -89,18 +89,18 @@ export async function runInit() {
     mask: '*',
   });
 
-  const tokenSpinner = display.spinner('Validando token...');
+  const tokenSpinner = display.spinner('Validating token...');
   let user;
   try {
     user = await validateToken(gitlabUrl, token);
-    tokenSpinner.succeed(`Token válido! Usuário: @${user.username}`);
+    tokenSpinner.succeed(`Valid token! User: @${user.username}`);
   } catch (error) {
-    tokenSpinner.fail('Token inválido ou expirado.');
-    display.info('Veja: https://docs.gitlab.com/user/profile/personal_access_tokens/');
+    tokenSpinner.fail('Invalid or expired token.');
+    display.info('See: https://docs.gitlab.com/user/profile/personal_access_tokens/');
     throw error;
   }
 
-  display.section('🤖 CONFIGURAÇÃO DA FERRAMENTA DE IA');
+  display.section('🤖 AI TOOL CONFIGURATION');
   const aiTool = await chooseAiTool();
 
   const baseConfig = existingConfig ?? {
@@ -138,6 +138,6 @@ export async function runInit() {
   const configPath = await saveConfig(config);
 
   display.success(MESSAGES.done);
-  display.info(`📁 Config salva em ${configPath} (modo 600)`);
+  display.info(`📁 Config saved at ${configPath} (mode 600)`);
   display.info(MESSAGES.next);
 }
