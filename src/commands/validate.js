@@ -1,11 +1,10 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import dayjs from 'dayjs';
 import { MESSAGES } from '../constants.js';
 import { runAiReview } from '../services/ai-tools.js';
+import { ensureDefaultContextFiles, readContextPrompt } from '../services/context.js';
 import { getMergeRequestData } from '../services/gitlab.js';
-import { buildMergeRequestMarkdown } from '../services/markdown.js';
-import { checkAndFixConfigPermissions, getOutputDir, readConfig } from '../utils/config-store.js';
+import { buildMergeRequestMarkdown, countDiffChanges } from '../services/markdown.js';
+import { checkAndFixConfigPermissions, readConfig } from '../utils/config-store.js';
 import * as display from '../utils/display.js';
 import { parseMergeRequestUrl } from '../utils/url-parser.js';
 
@@ -23,7 +22,7 @@ function findGitlabConfig(config, host) {
   );
 }
 
-export async function runValidate(url) {
+export async function runValidate(url, options = {}) {
   display.banner();
   display.info(`🔗 Analyzing: ${url}`);
 
@@ -73,8 +72,19 @@ export async function runValidate(url) {
   display.info(`📅 Date:     ${dayjs(data.mr.created_at).format('YYYY-MM-DD')}`);
   display.info(`📊 Stats:    ${data.diffs.length} files | changes_count: ${data.mr.changes_count ?? '?'}`);
 
-  const markdownSpinner = display.spinner('Generating diff markdown...');
+  const maxDiffChanges = config.ai?.maxDiffChanges;
+  const totalChanges = countDiffChanges(data.diffs);
+  if (Number.isInteger(maxDiffChanges) && maxDiffChanges > 0 && totalChanges > maxDiffChanges) {
+    display.warn(
+      `Diff interrompido: total de changes (${totalChanges}) excede o limite configurado (${maxDiffChanges}). Atualize o limite com: moses set-diff-limit`,
+    );
+    return;
+  }
+
+  const markdownSpinner = display.spinner('Preparando contexto e diff...');
   try {
+    await ensureDefaultContextFiles();
+    const contextPrompt = await readContextPrompt(options.prompt ?? '');
     const markdown = buildMergeRequestMarkdown({
       mr: data.mr,
       diffs: data.diffs,
@@ -82,25 +92,33 @@ export async function runValidate(url) {
       url,
     });
 
-    const outputDir = getOutputDir();
-    await fs.mkdir(outputDir, { recursive: true });
-    const fileName = `mr-${data.mr.iid}-${dayjs().format('YYYY-MM-DD')}.md`;
-    const fullPath = path.join(outputDir, fileName);
-    await fs.writeFile(fullPath, markdown, 'utf-8');
-    markdownSpinner.succeed(`Diff saved at: ${fullPath}`);
+    markdownSpinner.succeed('Contexto e diff preparados');
 
+    const reviewSpinner = display.spinner('Aguardando análise da IA...');
     display.info('\n🤖 Starting review with AI tool...');
     display.info('────────────────────────────────────────────────────────');
 
     await new Promise((resolve, reject) => {
       runAiReview(config.ai?.tool ?? 'copilot', markdown, {
+        options: {
+          feedbackStyle: config.ai?.feedbackStyle,
+          contextPrompt,
+        },
         onStdout: (chunk) => display.streamLine(chunk),
         onStderr: (chunk) => display.streamLine(chunk),
         onClose: (code) => {
-          if (code === 0) resolve();
-          else reject(new Error(`AI process exited with code ${code}`));
+          if (code === 0) {
+            reviewSpinner.succeed('Análise concluída');
+            resolve();
+          } else {
+            reviewSpinner.fail('Falha na análise da IA');
+            reject(new Error(`AI process exited with code ${code}`));
+          }
         },
-        onError: reject,
+        onError: (error) => {
+          reviewSpinner.fail('Falha na análise da IA');
+          reject(error);
+        },
       });
     });
 

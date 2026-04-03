@@ -41,3 +41,17 @@ ${commitLines || '_No commits_'}
 ${diffSections || '_No diffs_'}
 `;
 }
+
+export function countDiffChanges(diffs = []) {
+  if (!Array.isArray(diffs)) return 0;
+  return diffs.reduce((total, item) => {
+    const diff = item?.diff ?? '';
+    const lines = diff.split('\n');
+    const fileChanges = lines.filter((line) => {
+      if (!(line.startsWith('+') || line.startsWith('-'))) return false;
+      if (line.startsWith('+++') || line.startsWith('---')) return false;
+      return true;
+    }).length;
+    return total + fileChanges;
+  }, 0);
+}

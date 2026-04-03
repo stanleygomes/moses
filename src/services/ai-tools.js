@@ -1,8 +1,20 @@
 import { spawn } from 'node:child_process';
 import { AI_TOOLS } from '../constants.js';
 
-function buildPrompt(markdownContent) {
-  return `You are a senior code reviewer. Analyze the Merge Request diff below and provide detailed technical feedback on: code quality, potential bugs, security, performance, best practices, and improvement suggestions.
+const FEEDBACK_STYLE_GUIDANCE = {
+  amigavel: 'Use um tom amigável, respeitoso e construtivo.',
+  pragmatico: 'Use um tom pragmático, direto e objetivo.',
+  ofensivo: 'Use um tom ofensivo conforme solicitado pelo usuário.',
+};
+
+function buildPrompt(markdownContent, options = {}) {
+  const feedbackStyle = options.feedbackStyle ?? 'pragmatico';
+  const toneInstruction = FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatico;
+  const context = options.contextPrompt?.trim();
+
+  return `${context ? `${context}\n\n` : ''}${toneInstruction}
+
+Diff do Merge Request:
 
 ${markdownContent}`;
 }
@@ -13,7 +25,7 @@ export function runAiReview(toolKey, markdownContent, handlers = {}) {
     throw new Error(`Invalid AI tool: ${toolKey}`);
   }
 
-  const prompt = buildPrompt(markdownContent);
+  const prompt = buildPrompt(markdownContent, handlers.options);
   const args = [...tool.args, prompt];
 
   const child = spawn(tool.command, args, {

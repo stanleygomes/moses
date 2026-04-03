@@ -1,5 +1,6 @@
 import { confirm, input, password, select } from '@inquirer/prompts';
-import { AI_TOOLS, CONFIG_VERSION, MESSAGES } from '../constants.js';
+import { AI_TOOLS, CONFIG_VERSION, DEFAULT_MAX_DIFF_CHANGES, FEEDBACK_STYLES, MESSAGES } from '../constants.js';
+import { ensureDefaultContextFiles } from '../services/context.js';
 import { validateToken } from '../services/gitlab.js';
 import { checkAndFixConfigPermissions, getConfigPath, readConfig, saveConfig } from '../utils/config-store.js';
 import * as display from '../utils/display.js';
@@ -53,6 +54,28 @@ async function chooseAiTool() {
   }
 }
 
+async function chooseFeedbackStyle(existingStyle) {
+  const defaultStyle = FEEDBACK_STYLES.find((item) => item.key === existingStyle)?.key ?? FEEDBACK_STYLES[1].key;
+  return select({
+    message: 'Choose MR feedback style:',
+    choices: FEEDBACK_STYLES.map((item) => ({ name: item.label, value: item.key })),
+    default: defaultStyle,
+  });
+}
+
+async function chooseMaxDiffChanges(existingLimit) {
+  const fallback = Number.isInteger(existingLimit) && existingLimit > 0 ? existingLimit : DEFAULT_MAX_DIFF_CHANGES;
+  while (true) {
+    const value = await input({
+      message: 'Maximum allowed diff changes before interrupting validation:',
+      default: String(fallback),
+    });
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isInteger(parsed) && parsed > 0) return parsed;
+    display.error('Invalid value. Please inform a positive integer.');
+  }
+}
+
 export async function runInit() {
   display.banner();
   display.info(MESSAGES.welcome);
@@ -102,12 +125,20 @@ export async function runInit() {
 
   display.section('🤖 AI TOOL CONFIGURATION');
   const aiTool = await chooseAiTool();
+  const feedbackStyle = await chooseFeedbackStyle(existingConfig?.ai?.feedbackStyle);
+  const maxDiffChanges = await chooseMaxDiffChanges(existingConfig?.ai?.maxDiffChanges);
 
   const baseConfig = existingConfig ?? {
     version: CONFIG_VERSION,
     defaultGitlab: gitlabName,
     gitlabs: [],
-    ai: { tool: aiTool, customCommand: null, model: null },
+    ai: {
+      tool: aiTool,
+      customCommand: null,
+      model: null,
+      feedbackStyle,
+      maxDiffChanges,
+    },
     output: { dir: '~/.config/moses/reviews', keepFiles: true },
   };
 
@@ -132,10 +163,13 @@ export async function runInit() {
       tool: aiTool,
       customCommand: null,
       model: null,
+      feedbackStyle,
+      maxDiffChanges,
     },
   };
 
   const configPath = await saveConfig(config);
+  await ensureDefaultContextFiles();
 
   display.success(MESSAGES.done);
   display.info(`📁 Config saved at ${configPath} (mode 600)`);
