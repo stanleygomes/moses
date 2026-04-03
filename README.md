@@ -41,6 +41,12 @@ You can simply run
 moses validate https://gitlab.your-domain.com/group/project/-/merge_requests/123
 ```
 
+To know more about the commands, run:
+
+```bash
+moses help
+```
+
 Flow:
 
 1. Parses MR URL
@@ -93,21 +99,6 @@ pnpm run check
 ✅ These two CLIs are the ones currently tested in this project.
 
 🙏 Quer ajudar? Contribuições para suporte ao **Claude Code** e **Codex CLI** são muito bem-vindas.
-
-## ⚙️ Commands
-
-```bash
-moses init
-moses validate <mr-url> --prompt "contexto adicional opcional"
-moses set-feedback-style
-moses set-diff-limit
-```
-
-For GitHub Copilot, moses runs non-interactive mode with:
-
-```bash
-copilot -p "prompt"
-```
 
 ## 🤝 Como Contribuir
 
