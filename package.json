@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stanleygomes/moses"
+    "url": "https://github.com/stanleygomes/moses-cli"
   },
   "files": [
     "dist",
