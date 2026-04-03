@@ -17,7 +17,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier . --write",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "prepare": "husky"
   },
   "keywords": [
     "gitlab",
