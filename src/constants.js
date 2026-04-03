@@ -12,9 +12,9 @@ export const MESSAGES = {
 };
 
 export const FEEDBACK_STYLES = [
-  { key: "amigavel", label: "amigável" },
-  { key: "pragmatico", label: "pragmático" },
-  { key: "ofensivo", label: "ofensivo" },
+  { key: "friendly", label: "Friendly" },
+  { key: "pragmatic", label: "Pragmatic" },
+  { key: "offensive", label: "Offensive" },
 ];
 
 export const DEFAULT_MAX_DIFF_CHANGES = 1200;

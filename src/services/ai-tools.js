@@ -2,14 +2,14 @@ import { spawn } from 'node:child_process';
 import { AI_TOOLS } from '../constants.js';
 
 const FEEDBACK_STYLE_GUIDANCE = {
-  amigavel: 'Use um tom amigável, respeitoso e construtivo.',
-  pragmatico: 'Use um tom pragmático, direto e objetivo.',
-  ofensivo: 'Use um tom ofensivo conforme solicitado pelo usuário.',
+  friendly: 'Use um tom amigável, respeitoso e construtivo.',
+  pragmatic: 'Use um tom pragmático, direto e objetivo.',
+  offensive: 'Use um tom ofensivo conforme solicitado pelo usuário.',
 };
 
 function buildPrompt(markdownContent, options = {}) {
-  const feedbackStyle = options.feedbackStyle ?? 'pragmatico';
-  const toneInstruction = FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatico;
+  const feedbackStyle = options.feedbackStyle ?? 'pragmatic';
+  const toneInstruction = FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatic;
   const context = options.contextPrompt?.trim();
 
   return `${context ? `${context}\n\n` : ''}${toneInstruction}
