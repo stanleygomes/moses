@@ -1,10 +1,11 @@
-import type { AiToolDefinition } from './types.js';
+import type { AiToolDefinition } from './types/AiToolDefinition.js';
 
 export const APP_NAME = 'moses';
 export const CONFIG_VERSION = '1';
 
-export const DEFAULT_CONFIG_DIR = '~/.config/moses';
-export const DEFAULT_OUTPUT_DIR = '~/.config/moses/reviews';
+export const DEFAULT_CONFIG_DIR = '~/.moses-cli';
+export const DEFAULT_OUTPUT_DIR = `${DEFAULT_CONFIG_DIR}/reviews`;
+export const DEFAULT_CONTEXT_DIR = `${DEFAULT_CONFIG_DIR}/context`;
 
 export const MESSAGES = {
   welcome: "🚀 Welcome to moses! Let's set up your CLI.",

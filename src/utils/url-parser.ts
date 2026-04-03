@@ -1,4 +1,4 @@
-import type { ParsedMergeRequestUrl } from '../types.js';
+import type { ParsedMergeRequestUrl } from '../types/ParsedMergeRequestUrl.js';
 
 const URL_REGEX =
   /^https:\/\/(?<host>[^/]+)\/(?<projectPath>.+?)\/-\/merge_requests\/(?<mrIid>\d+)(?:\/.*)?$/;

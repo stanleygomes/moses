@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process';
 import { AI_TOOLS } from '../constants.js';
-import type { AiToolKey, ToolValidationResult } from '../types.js';
+import type { AiToolKey } from '../types/AiToolKey.js';
+import type { ToolValidationResult } from '../types/ToolValidationResult.js';
 
 export function getInstallUrl(toolKey: AiToolKey): string {
   const tool = AI_TOOLS.find((item) => item.key === toolKey);

@@ -2,7 +2,7 @@
 
 # moses-cli
 
-**moses** is your CLI to help code review of GitLab Merge Requests using AI tools like GitHub Copilot CLI and Gemini CLI.
+CLI buddy to help you with code review of GitLab Merge Requests, by using AI tools like GitHub Copilot CLI and Gemini CLI.
 
 [![npm version](https://img.shields.io/npm/v/@moses-cli/core.svg)](https://www.npmjs.com/package/@moses-cli/core)
 [![Node.js Version](https://img.shields.io/badge/node->=18-brightgreen.svg)](https://nodejs.org/)
@@ -15,7 +15,7 @@
 📦 Install the npm package
 
 ```bash
-npm install -g @moses-cli/core
+npm install -g moses-cli
 ```
 
 ## Initial Setup
@@ -29,7 +29,7 @@ The command:
 1. Configures GitLab instance (cloud or self-hosted)
 2. Validates token via `/api/v4/user` API
 3. Selects AI tool
-4. Saves config in `~/.config/moses/config.json` with mode `600`
+4. Saves config in `~/.moses-cli/config.json` with mode `600`
 
 ## Usage
 
@@ -43,9 +43,9 @@ Flow:
 
 1. Parses MR URL
 2. Fetches MR data + diffs + commits from GitLab API
-3. Loads context markdown files from `~/.config/moses/context/`
+3. Loads context markdown files from `~/.moses-cli/context/`
 4. Concatenates context files + optional prompt + MR diff and sends to configured AI tool
-5. Displays response in terminal with loading indicator
+5. Displays response in terminal
 
 ### Why moses?
 
@@ -70,18 +70,15 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 ## For local development
 
 ```bash
-npm install
-npm run build
-npm link
+pnpm install
+pnpm run build
+pnpm link
 ```
 
 ### Quality scripts
 
 ```bash
-npm run check-types
-npm run lint
-npm run lint:fix
-npm run format
+pnpm run check
 ```
 
 ## 🤖 Supported AI Tools

@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios';
-import type { MergeRequestBundle } from '../types.js';
+import type { MergeRequestBundle } from '../types/MergeRequestBundle.js';
 
 interface GitlabUser {
   username: string;

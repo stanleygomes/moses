@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { runInit } from '../src/commands/init.js';
-import { runValidate } from '../src/commands/validate.js';
-import { runSetDiffLimit, runSetFeedbackStyle } from '../src/commands/update-config.js';
-import type { ValidateOptions } from '../src/types.js';
+import { runInit } from '../src/commands/init/index.js';
+import { execute } from '../src/commands/validate/index.js';
+import { runSetDiffLimit, runSetFeedbackStyle } from '../src/commands/update-config/index.js';
+import type { ValidateOptions } from '../src/types/index.js';
+import packageJson from '../package.json' with { type: 'json' };
 
 const program = new Command();
 
 program
   .name('moses')
   .description('Automatic GitLab Merge Request validation with AI')
-  .version('1.0.0');
+  .version(packageJson.version);
 
 program.command('init').description('Interactive initial setup').action(runInit);
 
@@ -20,7 +21,7 @@ program
   .description('Validate a GitLab Merge Request')
   .argument('<url>', 'GitLab Merge Request URL')
   .option('-p, --prompt <text>', 'Additional context prompt to send with MR diff')
-  .action((url: string, options: ValidateOptions) => runValidate(url, options));
+  .action((url: string, options: ValidateOptions) => execute(url, options));
 
 program
   .command('set-feedback-style')

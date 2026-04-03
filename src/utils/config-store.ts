@@ -2,7 +2,9 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { DEFAULT_CONFIG_DIR, DEFAULT_OUTPUT_DIR } from '../constants.js';
-import type { ConfigPermissionStatus, MosesConfig } from '../types.js';
+import type { ConfigPermissionStatus } from '../types/ConfigPermissionStatus.js';
+import type { GitlabInstance } from '../types/GitlabInstance.js';
+import type { MosesConfig } from '../types/MosesConfig.js';
 
 const resolveHome = (value: string): string => value.replace(/^~(?=\/|$)/, os.homedir());
 
@@ -38,4 +40,20 @@ export async function checkAndFixConfigPermissions(): Promise<ConfigPermissionSt
     return { fixed: true, previousMode: mode };
   }
   return { fixed: false, previousMode: mode };
+}
+
+export function findGitlabInstance(config: MosesConfig, host: string): GitlabInstance | null {
+  const gitlabs = config.gitlabs ?? [];
+  return (
+    gitlabs.find((item) => {
+      try {
+        const urlHost = new URL(item.url).host;
+        return urlHost === host;
+      } catch {
+        return false;
+      }
+    }) ??
+    gitlabs.find((item) => item.default) ??
+    null
+  );
 }
