@@ -29,6 +29,8 @@ The command:
 1. Configures GitLab instance (cloud or self-hosted)
 2. Validates token via `/api/v4/user` API
 3. Selects AI tool
+4. Selects feedback style (amigável, pragmático ou ofensivo)
+5. Defines maximum `changes_count` limit to protect token usage
 4. Saves config in `~/.config/moses/config.json` with mode `600`
 
 ## Usage
@@ -39,13 +41,20 @@ You can simply run
 moses validate https://gitlab.your-domain.com/group/project/-/merge_requests/123
 ```
 
+With additional context prompt:
+
+```bash
+moses validate https://gitlab.your-domain.com/group/project/-/merge_requests/123 -p "Considere também regras internas do time para serviços críticos"
+```
+
 Flow:
 
 1. Parses MR URL
 2. Fetches MR data + diffs + commits from GitLab API
-3. Generates markdown in `~/.config/moses/reviews/`
+3. Concatenates context markdowns + optional user prompt + MR diff
 4. Sends content to configured AI tool
-5. Displays response in streaming mode on terminal
+5. Displays response only in terminal (no markdown output file)
+6. Shows loading while analyzing and (Linux) system notification on completion
 
 ### Why moses?
 
@@ -62,8 +71,18 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 - Support for multiple GitLab instances (gitlab.com + self-hosted)
 - Automatic validation of AI tool installation
 - Real-time streaming of AI analysis
-- Export diffs in Markdown with rich formatting
+- Prompt composition with context files + optional user prompt
+- Configurable feedback style and max diff changes limit
+- Terminal-only output with loading feedback
 - Elegant error handling with contextual messages
+
+### ⚙️ Update review settings after init
+
+```bash
+moses set-feedback-style
+moses set-feedback-style friendly
+moses set-max-changes 3000
+```
 
 ## For local development
 

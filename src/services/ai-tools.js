@@ -1,19 +1,24 @@
 import { spawn } from 'node:child_process';
 import { AI_TOOLS } from '../constants.js';
 
-function buildPrompt(markdownContent) {
-  return `You are a senior code reviewer. Analyze the Merge Request diff below and provide detailed technical feedback on: code quality, potential bugs, security, performance, best practices, and improvement suggestions.
-
-${markdownContent}`;
+function buildPrompt({ basePrompt, practicesPrompt, feedbackStyle, userPrompt, markdownContent }) {
+  const sections = [
+    basePrompt?.trim() ?? '',
+    practicesPrompt?.trim() ?? '',
+    feedbackStyle ? `Estilo de feedback: ${feedbackStyle}` : '',
+    userPrompt ? `Contexto adicional do usuário:\n${userPrompt.trim()}` : '',
+    `Conteúdo do MR para análise:\n\n${markdownContent}`,
+  ].filter(Boolean);
+  return sections.join('\n\n---\n\n');
 }
 
-export function runAiReview(toolKey, markdownContent, handlers = {}) {
+export function runAiReview(toolKey, promptData, handlers = {}) {
   const tool = AI_TOOLS.find((item) => item.key === toolKey);
   if (!tool) {
     throw new Error(`Invalid AI tool: ${toolKey}`);
   }
 
-  const prompt = buildPrompt(markdownContent);
+  const prompt = buildPrompt(promptData);
   const args = [...tool.args, prompt];
 
   const child = spawn(tool.command, args, {

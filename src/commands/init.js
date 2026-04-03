@@ -53,6 +53,30 @@ async function chooseAiTool() {
   }
 }
 
+async function chooseFeedbackStyle(defaultValue = 'pragmatic') {
+  return select({
+    message: 'Choose review feedback style:',
+    choices: [
+      { name: 'Amigável', value: 'friendly' },
+      { name: 'Pragmático', value: 'pragmatic' },
+      { name: 'Ofensivo', value: 'offensive' },
+    ],
+    default: defaultValue,
+  });
+}
+
+async function chooseMaxChanges(defaultValue = 3000) {
+  while (true) {
+    const value = await input({
+      message: 'Maximum allowed MR changes_count before stopping validation:',
+      default: String(defaultValue),
+    });
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isInteger(parsed) && parsed > 0) return parsed;
+    display.error('Please provide a positive integer value.');
+  }
+}
+
 export async function runInit() {
   display.banner();
   display.info(MESSAGES.welcome);
@@ -102,6 +126,9 @@ export async function runInit() {
 
   display.section('🤖 AI TOOL CONFIGURATION');
   const aiTool = await chooseAiTool();
+  display.section('🧠 REVIEW CONFIGURATION');
+  const feedbackStyle = await chooseFeedbackStyle(existingConfig?.review?.feedbackStyle ?? 'pragmatic');
+  const maxChanges = await chooseMaxChanges(existingConfig?.review?.maxChanges ?? 3000);
 
   const baseConfig = existingConfig ?? {
     version: CONFIG_VERSION,
@@ -109,6 +136,7 @@ export async function runInit() {
     gitlabs: [],
     ai: { tool: aiTool, customCommand: null, model: null },
     output: { dir: '~/.config/moses/reviews', keepFiles: true },
+    review: { feedbackStyle: 'pragmatic', maxChanges: 3000 },
   };
 
   const remainingGitlabs = (baseConfig.gitlabs ?? []).filter((item) => item.name !== gitlabName);
@@ -132,6 +160,10 @@ export async function runInit() {
       tool: aiTool,
       customCommand: null,
       model: null,
+    },
+    review: {
+      feedbackStyle,
+      maxChanges,
     },
   };
 
