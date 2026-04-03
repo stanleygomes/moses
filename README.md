@@ -1,6 +1,6 @@
 <div align="center">
 
-# moses
+# moses-cli
 
 **moses** is your CLI to help code review of GitLab Merge Requests using AI tools like GitHub Copilot CLI and Gemini CLI.
 
