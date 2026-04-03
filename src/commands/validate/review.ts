@@ -26,21 +26,36 @@ export async function runReviewTask(
 
     markdownSpinner.succeed(`Context and diff prepared (folder: ${DEFAULT_CONTEXT_DIR})`);
 
-    const reviewSpinner = display.spinner('Waiting for AI analysis...');
+    const reviewSpinner = display.spinner('Connecting to AI tool...');
     display.info('\n🤖 Starting review with AI tool...');
     display.info('────────────────────────────────────────────────────────');
 
     await new Promise<void>((resolve, reject) => {
+      let firstChunk = true;
+      const stopSpinnerOnStart = () => {
+        if (firstChunk) {
+          reviewSpinner.stop();
+          firstChunk = false;
+        }
+      };
+
       runAiReview(config.ai?.tool ?? 'copilot', markdown, {
         options: {
           feedbackStyle: config.ai?.feedbackStyle,
           contextPrompt,
         },
-        onStdout: (chunk: string) => display.streamLine(chunk),
-        onStderr: (chunk: string) => display.streamLine(chunk),
+        onStdout: (chunk: string) => {
+          stopSpinnerOnStart();
+          display.stream(chunk);
+        },
+        onStderr: (chunk: string) => {
+          stopSpinnerOnStart();
+          display.stream(chunk);
+        },
         onClose: (code: number | null) => {
           if (code === 0) {
-            reviewSpinner.succeed('Analysis completed');
+            display.info('\n────────────────────────────────────────────────────────');
+            display.success('Analysis completed');
             resolve();
           } else {
             reviewSpinner.fail('AI analysis failed');
@@ -53,9 +68,6 @@ export async function runReviewTask(
         },
       });
     });
-
-    display.info('\n────────────────────────────────────────────────────────');
-    display.success('Review completed!');
   } catch (error: unknown) {
     markdownSpinner.fail('Failed to generate markdown or run AI review.');
     display.error(error instanceof Error ? error.message : 'Unknown error during AI review.');

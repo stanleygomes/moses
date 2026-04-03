@@ -54,6 +54,6 @@ export function link(text: string): void {
   console.log(chalk.cyan.underline(text));
 }
 
-export function streamLine(line: string): void {
-  process.stdout.write(chalk.gray(line));
+export function stream(chunk: string): void {
+  process.stdout.write(chunk);
 }

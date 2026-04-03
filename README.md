@@ -71,8 +71,8 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 
 ```bash
 pnpm install
-pnpm run build
-pnpm link
+pnpm build
+node dist/bin/moses.js
 ```
 
 ### Quality scripts

@@ -17,7 +17,7 @@ export const MESSAGES = {
 export const FEEDBACK_STYLES = [
   { key: 'friendly', label: 'Friendly' },
   { key: 'pragmatic', label: 'Pragmatic' },
-  { key: 'offensive', label: 'Offensive' },
+  { key: 'offensive', label: 'Ruthless (Brutally honest)' },
 ] as const;
 
 export const DEFAULT_MAX_DIFF_CHANGES = 1200;
