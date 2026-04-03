@@ -75,7 +75,6 @@ npm run build
 npm link
 ```
 
-
 ### Quality scripts
 
 ```bash
@@ -87,10 +86,10 @@ npm run format
 
 ## 🤖 Supported AI Tools
 
-| Tool              | CLI          | Installation                              |
-| ----------------- | ------------ | ----------------------------------------- |
-| GitHub Copilot    | `copilot`    | `npm install -g @github/copilot`          |
-| Google Gemini CLI | `gemini`     | `npm install -g @google/gemini-cli`       |
+| Tool              | CLI       | Installation                        |
+| ----------------- | --------- | ----------------------------------- |
+| GitHub Copilot    | `copilot` | `npm install -g @github/copilot`    |
+| Google Gemini CLI | `gemini`  | `npm install -g @google/gemini-cli` |
 
 ✅ These two CLIs are the ones currently tested in this project.
 

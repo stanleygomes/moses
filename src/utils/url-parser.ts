@@ -6,7 +6,9 @@ const URL_REGEX =
 export function parseMergeRequestUrl(url: string): ParsedMergeRequestUrl {
   const match = url.match(URL_REGEX);
   if (!match?.groups) {
-    throw new Error('Invalid URL. Expected format: https://<host>/<group>/<project>/-/merge_requests/<iid>');
+    throw new Error(
+      'Invalid URL. Expected format: https://<host>/<group>/<project>/-/merge_requests/<iid>',
+    );
   }
   const { host, projectPath, mrIid } = match.groups;
   if (!host || !projectPath || !mrIid) {

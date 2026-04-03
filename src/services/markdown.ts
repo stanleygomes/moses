@@ -8,7 +8,12 @@ interface BuildMergeRequestMarkdownInput {
   url: string;
 }
 
-export function buildMergeRequestMarkdown({ mr, diffs, commits, url }: BuildMergeRequestMarkdownInput): string {
+export function buildMergeRequestMarkdown({
+  mr,
+  diffs,
+  commits,
+  url,
+}: BuildMergeRequestMarkdownInput): string {
   const createdAt = dayjs(mr.created_at).format('YYYY-MM-DD');
   const changedFiles = Array.isArray(diffs) ? diffs.length : 0;
   const additions = mr.changes_count ?? '?';

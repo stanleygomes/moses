@@ -8,9 +8,13 @@ const FEEDBACK_STYLE_GUIDANCE: Record<FeedbackStyle, string> = {
   offensive: 'Use um tom ofensivo conforme solicitado pelo usuário.',
 };
 
-function buildPrompt(markdownContent: string, options: RunAiReviewHandlers['options'] = {}): string {
+function buildPrompt(
+  markdownContent: string,
+  options: RunAiReviewHandlers['options'] = {},
+): string {
   const feedbackStyle = options.feedbackStyle ?? 'pragmatic';
-  const toneInstruction = FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatic;
+  const toneInstruction =
+    FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatic;
   const context = options.contextPrompt?.trim();
 
   return `${context ? `${context}\n\n` : ''}${toneInstruction}
@@ -20,7 +24,11 @@ Diff do Merge Request:
 ${markdownContent}`;
 }
 
-export function runAiReview(toolKey: string, markdownContent: string, handlers: RunAiReviewHandlers = {}): void {
+export function runAiReview(
+  toolKey: string,
+  markdownContent: string,
+  handlers: RunAiReviewHandlers = {},
+): void {
   const tool = AI_TOOLS.find((item) => item.key === toolKey);
   if (!tool) {
     throw new Error(`Invalid AI tool: ${toolKey}`);

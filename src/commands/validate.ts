@@ -20,7 +20,9 @@ function findGitlabConfig(config: MosesConfig, host: string): GitlabInstance | n
       } catch {
         return false;
       }
-    }) ?? gitlabs.find((item) => item.default) ?? null
+    }) ??
+    gitlabs.find((item) => item.default) ??
+    null
   );
 }
 
@@ -57,7 +59,12 @@ export async function runValidate(url: string, options: ValidateOptions = {}): P
   const spinner = display.spinner('Fetching MR data...');
   let data;
   try {
-    data = await getMergeRequestData(gitlabConfig.url, gitlabConfig.token, parsedUrl.projectId, parsedUrl.mrIid);
+    data = await getMergeRequestData(
+      gitlabConfig.url,
+      gitlabConfig.token,
+      parsedUrl.projectId,
+      parsedUrl.mrIid,
+    );
     spinner.succeed(`MR #${data.mr.iid} — "${data.mr.title}" loaded`);
   } catch (error: unknown) {
     spinner.fail('Failed to fetch MR data.');
@@ -72,7 +79,9 @@ export async function runValidate(url: string, options: ValidateOptions = {}): P
   display.info(`👤 Author:   ${data.mr.author?.name ?? data.mr.author?.username ?? 'unknown'}`);
   display.info(`🌿 Branch:   ${data.mr.source_branch} → ${data.mr.target_branch}`);
   display.info(`📅 Date:     ${dayjs(data.mr.created_at).format('YYYY-MM-DD')}`);
-  display.info(`📊 Stats:    ${data.diffs.length} files | changes_count: ${data.mr.changes_count ?? '?'}`);
+  display.info(
+    `📊 Stats:    ${data.diffs.length} files | changes_count: ${data.mr.changes_count ?? '?'}`,
+  );
 
   const maxDiffChanges = config.ai?.maxDiffChanges;
   const totalChanges = countDiffChanges(data.diffs);

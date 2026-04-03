@@ -9,7 +9,8 @@
     "rootDir": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
   },
   "include": ["bin/**/*.ts", "src/**/*.ts"],
   "exclude": ["dist", "node_modules"]

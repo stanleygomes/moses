@@ -47,10 +47,18 @@ export async function getMergeRequestData(
 ): Promise<MergeRequestBundle> {
   const client = createClient(baseURL, token);
   const [mr, diffs, commits] = await Promise.all([
-    withRetry(() => client.get<MergeRequestBundle['mr']>(`/api/v4/projects/${projectId}/merge_requests/${mrIid}`)),
-    withRetry(() => client.get<MergeRequestBundle['diffs']>(`/api/v4/projects/${projectId}/merge_requests/${mrIid}/diffs`)),
     withRetry(() =>
-      client.get<MergeRequestBundle['commits']>(`/api/v4/projects/${projectId}/merge_requests/${mrIid}/commits`),
+      client.get<MergeRequestBundle['mr']>(`/api/v4/projects/${projectId}/merge_requests/${mrIid}`),
+    ),
+    withRetry(() =>
+      client.get<MergeRequestBundle['diffs']>(
+        `/api/v4/projects/${projectId}/merge_requests/${mrIid}/diffs`,
+      ),
+    ),
+    withRetry(() =>
+      client.get<MergeRequestBundle['commits']>(
+        `/api/v4/projects/${projectId}/merge_requests/${mrIid}/commits`,
+      ),
     ),
   ]);
   return {

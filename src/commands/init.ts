@@ -1,8 +1,19 @@
 import { confirm, input, password, select } from '@inquirer/prompts';
-import { AI_TOOLS, CONFIG_VERSION, DEFAULT_MAX_DIFF_CHANGES, FEEDBACK_STYLES, MESSAGES } from '../constants.js';
+import {
+  AI_TOOLS,
+  CONFIG_VERSION,
+  DEFAULT_MAX_DIFF_CHANGES,
+  FEEDBACK_STYLES,
+  MESSAGES,
+} from '../constants.js';
 import { ensureDefaultContextFiles } from '../services/context.js';
 import { validateToken } from '../services/gitlab.js';
-import { checkAndFixConfigPermissions, getConfigPath, readConfig, saveConfig } from '../utils/config-store.js';
+import {
+  checkAndFixConfigPermissions,
+  getConfigPath,
+  readConfig,
+  saveConfig,
+} from '../utils/config-store.js';
 import * as display from '../utils/display.js';
 import { validateToolInstallation } from '../utils/tool-validator.js';
 import { validateGitlabUrl } from '../utils/url-parser.js';
@@ -59,8 +70,11 @@ async function chooseAiTool(): Promise<AiToolKey> {
   }
 }
 
-async function chooseFeedbackStyle(existingStyle: FeedbackStyle | undefined): Promise<FeedbackStyle> {
-  const defaultStyle = FEEDBACK_STYLES.find((item) => item.key === existingStyle)?.key ?? FEEDBACK_STYLES[1].key;
+async function chooseFeedbackStyle(
+  existingStyle: FeedbackStyle | undefined,
+): Promise<FeedbackStyle> {
+  const defaultStyle =
+    FEEDBACK_STYLES.find((item) => item.key === existingStyle)?.key ?? FEEDBACK_STYLES[1].key;
   return select({
     message: 'Choose MR feedback style:',
     choices: FEEDBACK_STYLES.map((item) => ({ name: item.label, value: item.key })),
@@ -69,7 +83,10 @@ async function chooseFeedbackStyle(existingStyle: FeedbackStyle | undefined): Pr
 }
 
 async function chooseMaxDiffChanges(existingLimit: number | undefined): Promise<number> {
-  const fallback = Number.isInteger(existingLimit) && existingLimit > 0 ? existingLimit : DEFAULT_MAX_DIFF_CHANGES;
+  const fallback =
+    typeof existingLimit === 'number' && Number.isInteger(existingLimit) && existingLimit > 0
+      ? existingLimit
+      : DEFAULT_MAX_DIFF_CHANGES;
   while (true) {
     const value = await input({
       message: 'Maximum allowed diff changes before interrupting validation:',
@@ -134,23 +151,25 @@ export async function runInit(): Promise<void> {
   const feedbackStyle = await chooseFeedbackStyle(existingConfig?.ai?.feedbackStyle);
   const maxDiffChanges = await chooseMaxDiffChanges(existingConfig?.ai?.maxDiffChanges);
 
-  const baseConfig: MosesConfig =
-    existingConfig ?? {
-      version: CONFIG_VERSION,
-      defaultGitlab: gitlabName,
-      gitlabs: [],
-      ai: {
-        tool: aiTool,
-        customCommand: null,
-        model: null,
-        feedbackStyle,
-        maxDiffChanges,
-      },
-      output: { dir: '~/.config/moses/reviews', keepFiles: true },
-    };
+  const baseConfig: MosesConfig = existingConfig ?? {
+    version: CONFIG_VERSION,
+    defaultGitlab: gitlabName,
+    gitlabs: [],
+    ai: {
+      tool: aiTool,
+      customCommand: null,
+      model: null,
+      feedbackStyle,
+      maxDiffChanges,
+    },
+    output: { dir: '~/.config/moses/reviews', keepFiles: true },
+  };
 
   const remainingGitlabs = baseConfig.gitlabs.filter((item) => item.name !== gitlabName);
-  const gitlabs = [...remainingGitlabs, { name: gitlabName, url: gitlabUrl, token, default: true }].map((item) => ({
+  const gitlabs = [
+    ...remainingGitlabs,
+    { name: gitlabName, url: gitlabUrl, token, default: true },
+  ].map((item) => ({
     ...item,
     default: item.name === gitlabName,
   }));
