@@ -13,14 +13,16 @@ const program = new Command();
 
 program
   .name('moses')
-  .description('Automatic GitLab Merge Request validation with AI')
+  .description(
+    'CLI buddy to help you with code review of GitLab Merge Requests, by using AI tools.',
+  )
   .version(packageJson.version);
 
 program.command('init').description('Interactive initial setup').action(runInit);
 
 program
   .command('validate')
-  .description('Validate a GitLab Merge Request')
+  .description('Validate a GitLab Merge Request with an AI tool')
   .argument('<url>', 'GitLab Merge Request URL')
   .option('-p, --prompt <text>', 'Additional context prompt to send with MR diff')
   .action((url: string, options: ValidateOptions) => execute(url, options));
