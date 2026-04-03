@@ -2,6 +2,7 @@
 
 ## Good practices
 
+- Use static import
 - Explicit error handling
 - Clear names for functions and variables
 - Simple and readable code
