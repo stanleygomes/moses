@@ -4,6 +4,16 @@ on:
   workflow_call:
 
 jobs:
+  validateCommits:
+    name: Validate Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+
+      - name: Validate Conventional Commits
+        uses: wagoid/commitlint-github-action@v5
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -22,7 +32,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -48,7 +58,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -74,7 +84,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -100,7 +110,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
