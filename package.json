@@ -4,15 +4,20 @@
   "description": "Thou shalt not break master",
   "type": "module",
   "bin": {
-    "moses": "./bin/moses.js",
-    "lourran": "./bin/moses.js"
+    "moses": "./dist/bin/moses.js",
+    "lourran": "./dist/bin/moses.js"
   },
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "start": "node ./bin/moses.js",
-    "test": "echo \"No tests specified\""
+    "build": "npm run check-types && tsc && mkdir -p dist/src && cp -R src/prompts dist/src/prompts",
+    "start": "node ./dist/bin/moses.js",
+    "test": "echo \"No tests specified\"",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier . --write",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [
     "gitlab",
@@ -30,8 +35,7 @@
     "url": "https://github.com/stanleygomes/moses"
   },
   "files": [
-    "bin",
-    "src",
+    "dist",
     "README.md"
   ],
   "dependencies": {
@@ -43,5 +47,15 @@
     "dayjs": "^1.11.13",
     "figlet": "^1.8.2",
     "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "typescript": "^6.0.2",
+    "@eslint/js": "^10.1.0"
   }
 }

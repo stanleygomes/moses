@@ -71,7 +71,18 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 
 ```bash
 npm install
+npm run build
 npm link
+```
+
+
+### Quality scripts
+
+```bash
+npm run check-types
+npm run lint
+npm run lint:fix
+npm run format
 ```
 
 ## 🤖 Supported AI Tools

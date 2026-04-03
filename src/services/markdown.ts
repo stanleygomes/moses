@@ -1,13 +1,19 @@
 import dayjs from 'dayjs';
+import type { MergeRequestBundle, MergeRequestDiff } from '../types.js';
 
-export function buildMergeRequestMarkdown({ mr, diffs, commits, url }) {
+interface BuildMergeRequestMarkdownInput {
+  mr: MergeRequestBundle['mr'];
+  diffs: MergeRequestBundle['diffs'];
+  commits: MergeRequestBundle['commits'];
+  url: string;
+}
+
+export function buildMergeRequestMarkdown({ mr, diffs, commits, url }: BuildMergeRequestMarkdownInput): string {
   const createdAt = dayjs(mr.created_at).format('YYYY-MM-DD');
   const changedFiles = Array.isArray(diffs) ? diffs.length : 0;
-  const additions = mr?.changes_count ?? '?';
+  const additions = mr.changes_count ?? '?';
 
-  const commitLines = commits
-    .map((commit) => `- ${commit.short_id} — ${commit.title}`)
-    .join('\n');
+  const commitLines = commits.map((commit) => `- ${commit.short_id} — ${commit.title}`).join('\n');
 
   const diffSections = diffs
     .map((item) => {
@@ -42,10 +48,10 @@ ${diffSections || '_No diffs_'}
 `;
 }
 
-export function countDiffChanges(diffs = []) {
+export function countDiffChanges(diffs: MergeRequestDiff[] = []): number {
   if (!Array.isArray(diffs)) return 0;
   return diffs.reduce((total, item) => {
-    const diff = item?.diff ?? '';
+    const diff = item.diff ?? '';
     const lines = diff.split('\n');
     const fileChanges = lines.filter((line) => {
       if (!(line.startsWith('+') || line.startsWith('-'))) return false;

@@ -2,8 +2,9 @@ import { input, select } from '@inquirer/prompts';
 import { DEFAULT_MAX_DIFF_CHANGES, FEEDBACK_STYLES, MESSAGES } from '../constants.js';
 import { checkAndFixConfigPermissions, readConfig, saveConfig } from '../utils/config-store.js';
 import * as display from '../utils/display.js';
+import type { FeedbackStyle, MosesConfig } from '../types.js';
 
-async function loadConfigOrExit() {
+async function loadConfigOrExit(): Promise<MosesConfig | null> {
   try {
     const config = await readConfig();
     const permissionStatus = await checkAndFixConfigPermissions();
@@ -17,22 +18,22 @@ async function loadConfigOrExit() {
   }
 }
 
-export async function runSetFeedbackStyle() {
+export async function runSetFeedbackStyle(): Promise<void> {
   display.banner();
   const config = await loadConfigOrExit();
   if (!config) return;
 
   const current = config.ai?.feedbackStyle;
-  const style = await select({
+  const style: FeedbackStyle = await select({
     message: 'Choose MR feedback style:',
     choices: FEEDBACK_STYLES.map((item) => ({ name: item.label, value: item.key })),
     default: FEEDBACK_STYLES.find((item) => item.key === current)?.key ?? FEEDBACK_STYLES[1].key,
   });
 
-  const nextConfig = {
+  const nextConfig: MosesConfig = {
     ...config,
     ai: {
-      ...(config.ai ?? {}),
+      ...config.ai,
       feedbackStyle: style,
     },
   };
@@ -41,7 +42,7 @@ export async function runSetFeedbackStyle() {
   display.success('Feedback style updated successfully.');
 }
 
-export async function runSetDiffLimit() {
+export async function runSetDiffLimit(): Promise<void> {
   display.banner();
   const config = await loadConfigOrExit();
   if (!config) return;
@@ -60,10 +61,10 @@ export async function runSetDiffLimit() {
       continue;
     }
 
-    const nextConfig = {
+    const nextConfig: MosesConfig = {
       ...config,
       ai: {
-        ...(config.ai ?? {}),
+        ...config.ai,
         maxDiffChanges: parsed,
       },
     };
