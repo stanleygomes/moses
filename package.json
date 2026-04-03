@@ -16,8 +16,9 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier . --write",
+    "format:check": "prettier . --check",
     "check-types": "tsc --noEmit",
-    "check": "pnpm format && pnpm lint && pnpm check-types",
+    "check": "pnpm format:check && pnpm lint && pnpm check-types",
     "build": "rm -rf dist && tsc && mkdir -p dist/src/prompts && cp src/prompts/*.md dist/src/prompts/",
     "prepare": "husky"
   },
