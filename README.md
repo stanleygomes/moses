@@ -14,7 +14,7 @@ CLI buddy to help you with code review of GitLab Merge Requests, by using AI too
 
 ## Installation
 
-📦 Install the npm package
+Install the npm package
 
 ```bash
 npm install -g moses-cli
@@ -59,10 +59,10 @@ Flow:
 
 Like Moses guiding his people to the promised land, moses validates every merge request, ensuring your most precious asset—your code—reaches production safely.
 
-- ⚡ **Fast analysis**: Fetches diffs directly from GitLab API
-- 🤖 **Multi-AI**: Focus on tested support for GitHub Copilot CLI and Gemini CLI
-- 🔒 **Secure**: Tokens stored with 600 permissions, never exposed
-- 📊 **Comprehensive**: Generates structured markdown with stats, commits, and diffs
+- **Fast analysis**: Fetches diffs directly from GitLab API
+- **Multi-AI**: Focus on tested support for GitHub Copilot CLI and Gemini CLI
+- **Secure**: Tokens stored with 600 permissions, never exposed
+- **Comprehensive**: Generates structured markdown with stats, commits, and diffs
 
 ## Features
 
@@ -89,27 +89,27 @@ node dist/bin/moses.js
 pnpm run check
 ```
 
-## 🤖 Supported AI Tools
+## Supported AI Tools
 
 | Tool              | CLI       | Installation                        |
 | ----------------- | --------- | ----------------------------------- |
 | GitHub Copilot    | `copilot` | `npm install -g @github/copilot`    |
 | Google Gemini CLI | `gemini`  | `npm install -g @google/gemini-cli` |
 
-✅ These two CLIs are the ones currently tested in this project.
+These two CLIs are the ones currently tested in this project.
 
-🙏 Quer ajudar? Contribuições para suporte ao **Claude Code** e **Codex CLI** são muito bem-vindas.
+Want to help? Contributions to support **Claude Code** and **Codex CLI** are very welcome.
 
-## 🤝 Como Contribuir
+## How to Contribute
 
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Licença
+## License
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para detalhes.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 Made with 🔥 by Lumen HQ
