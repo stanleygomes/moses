@@ -1,6 +1,7 @@
 import { DEFAULT_CONTEXT_DIR } from '../../constants.js';
 import { runAiReview } from '../../services/ai-tools.js';
 import { ensureDefaultContextFiles, readContextPrompt } from '../../services/context.js';
+import { scanRepoForContext } from '../../services/context-scanner.js';
 import { buildMergeRequestMarkdown } from '../../services/markdown.js';
 import * as display from '../../utils/display.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';
@@ -12,11 +13,20 @@ export async function runReviewTask(
   data: MergeRequestBundle,
   config: MosesConfig,
   options: ValidateOptions,
+  repoPath: string | null = null,
 ): Promise<void> {
   const markdownSpinner = display.spinner('Preparing context and diff...');
   try {
     await ensureDefaultContextFiles();
-    const contextPrompt = await readContextPrompt(options.prompt ?? '');
+    let contextPrompt = await readContextPrompt(options.prompt ?? '');
+
+    if (repoPath) {
+      const repoContext = await scanRepoForContext(repoPath);
+      if (repoContext) {
+        contextPrompt = `${contextPrompt}\n${repoContext}`;
+      }
+    }
+
     const markdown = buildMergeRequestMarkdown({
       mr: data.mr,
       diffs: data.diffs,

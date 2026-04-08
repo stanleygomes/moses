@@ -72,6 +72,8 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 - Real-time streaming of AI analysis
 - Configurable feedback style (amigável, pragmático, ofensivo)
 - Configurable diff changes limit with safe interruption
+- **Internal Repository Context**: Automatically scans for `copilot-instructions.md`, `.github/copilot-instructions.md`, `claude.md`, etc., in your project to give the AI project-specific rules.
+- **Auto-Download Context**: Option to clone the MR repository if you are not currently in the project folder.
 - Optional extra prompt context in `moses validate`
 - Elegant error handling with contextual messages
 

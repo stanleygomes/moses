@@ -14,6 +14,15 @@ export const MESSAGES = {
   noConfig: 'Configuration not found. Run: moses init',
 };
 
+export const DEFAULT_REPOS_DIR = `${DEFAULT_CONFIG_DIR}/repos`;
+export const CONTEXT_FILE_PATTERNS = [
+  'copilot-instructions.md',
+  '.github/copilot-instructions.md',
+  'claude.md',
+  '.clauderc',
+  'README.md',
+];
+
 export const FEEDBACK_STYLES = [
   { key: 'friendly', label: 'Friendly' },
   { key: 'pragmatic', label: 'Pragmatic' },
