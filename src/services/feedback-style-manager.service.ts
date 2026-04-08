@@ -18,5 +18,9 @@ export class FeedbackStyleManager {
   static handleError(error: unknown): void {
     Display.error('Could not update feedback style.');
     Display.error(ErrorUtil.getMessage(error));
+
+    if (!(error instanceof Error && (error as { code?: string }).code === 'ENOENT')) {
+      console.log(error);
+    }
   }
 }

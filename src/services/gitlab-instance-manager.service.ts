@@ -62,11 +62,21 @@ export class GitlabInstanceManager {
     Display.error('Could not load Moses configuration.');
     Display.info('Run "moses init" if you haven\'t yet.');
     Display.error(ErrorUtil.getMessage(error));
+
+    if (!(error instanceof Error && (error as { code?: string }).code === 'ENOENT')) {
+      console.log(error);
+    }
   }
 
   static handleSwitchError(error: unknown): void {
     Display.error('Could not switch GitLab instance.');
     Display.error(ErrorUtil.getMessage(error));
+
+    if (error instanceof Error && (error as { code?: string }).code === 'ENOENT') {
+      Display.info('Run "moses init" to create a configuration first.');
+    } else {
+      console.log(error);
+    }
   }
 
   private static buildInstanceChoices(config: MosesConfig): { name: string; value: string }[] {

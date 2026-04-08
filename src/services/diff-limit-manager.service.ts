@@ -24,6 +24,9 @@ export class DiffLimitManager {
 
   static handleError(error: unknown): void {
     Display.error('Could not update diff limit.');
-    console.log(error);
+
+    if (!(error instanceof Error && (error as { code?: string }).code === 'ENOENT')) {
+      console.log(error);
+    }
   }
 }
