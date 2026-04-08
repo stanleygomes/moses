@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { CONTEXT_FILE_PATTERNS } from '../constants.js';
+import { CONTEXT_FILE_PATTERNS } from '../constants/context.constant.js';
 
 /**
  * Scans a repository directory for files matching the context patterns.

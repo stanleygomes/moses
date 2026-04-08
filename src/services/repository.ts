@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import os from 'node:os';
-import { DEFAULT_REPOS_DIR } from '../constants.js';
+import { DEFAULT_REPOS_DIR } from '../constants/paths.constant.js';
 
 export class RepositoryService {
   private static normalize(url: string): string {

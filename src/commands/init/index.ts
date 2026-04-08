@@ -1,5 +1,5 @@
 import { confirm } from '@inquirer/prompts';
-import { MESSAGES } from '../../constants.js';
+import { MESSAGES } from '../../constants/messages.constant.js';
 import { Display } from '../../utils/display.js';
 import { InitConfigLoader } from './config-loader.js';
 import { GitlabWizard } from './gitlab-wizard.js';

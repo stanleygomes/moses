@@ -1,4 +1,5 @@
-import { CONFIG_VERSION, DEFAULT_OUTPUT_DIR } from '../../constants.js';
+import { CONFIG_VERSION } from '../../constants/app.constant.js';
+import { DEFAULT_OUTPUT_DIR } from '../../constants/paths.constant.js';
 import { ContextService } from '../../services/context.js';
 import { ConfigStore } from '../../utils/config-store.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';

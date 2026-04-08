@@ -1,4 +1,4 @@
-import { MESSAGES } from '../../constants.js';
+import { MESSAGES } from '../../constants/messages.constant.js';
 import { ConfigStore } from '../../utils/config-store.js';
 import { Display } from '../../utils/display.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';

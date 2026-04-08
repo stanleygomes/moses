@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_CONTEXT_DIR } from '../constants.js';
+import { DEFAULT_CONTEXT_DIR } from '../constants/paths.constant.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROMPTS_DIR = path.resolve(__dirname, '../prompts');

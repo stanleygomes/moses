@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { DEFAULT_CONFIG_DIR, DEFAULT_OUTPUT_DIR } from '../constants.js';
+import { DEFAULT_CONFIG_DIR, DEFAULT_OUTPUT_DIR } from '../constants/paths.constant.js';
 import type { ConfigPermissionStatus } from '../types/ConfigPermissionStatus.js';
 import type { GitlabInstance } from '../types/GitlabInstance.js';
 import type { MosesConfig } from '../types/MosesConfig.js';

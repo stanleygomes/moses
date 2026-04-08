@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { AI_TOOLS } from '../constants.js';
+import { AI_TOOLS } from '../constants/ai.constant.js';
 import type { FeedbackStyle } from '../types/FeedbackStyle.js';
 import type { RunAiReviewHandlers } from '../types/RunAiReviewHandlers.js';
 

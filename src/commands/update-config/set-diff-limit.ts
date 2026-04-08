@@ -1,5 +1,5 @@
 import { input } from '@inquirer/prompts';
-import { DEFAULT_MAX_DIFF_CHANGES } from '../../constants.js';
+import { DEFAULT_MAX_DIFF_CHANGES } from '../../constants/ai.constant.js';
 import { ConfigStore } from '../../utils/config-store.js';
 import { Display } from '../../utils/display.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';

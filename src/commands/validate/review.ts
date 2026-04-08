@@ -1,4 +1,4 @@
-import { DEFAULT_CONTEXT_DIR } from '../../constants.js';
+import { DEFAULT_CONTEXT_DIR } from '../../constants/paths.constant.js';
 import { AiReviewService } from '../../services/ai-tools.js';
 import { ContextService } from '../../services/context.js';
 import { ContextScannerService } from '../../services/context-scanner.js';

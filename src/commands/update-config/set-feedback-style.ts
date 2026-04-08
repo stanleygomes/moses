@@ -1,5 +1,5 @@
 import { select } from '@inquirer/prompts';
-import { FEEDBACK_STYLES } from '../../constants.js';
+import { FEEDBACK_STYLES } from '../../constants/feedback.constant.js';
 import { ConfigStore } from '../../utils/config-store.js';
 import { Display } from '../../utils/display.js';
 import type { FeedbackStyle } from '../../types/FeedbackStyle.js';

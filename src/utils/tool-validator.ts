@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import { AI_TOOLS } from '../constants.js';
+import { AI_TOOLS } from '../constants/ai.constant.js';
 import type { AiToolKey } from '../types/AiToolKey.js';
 import type { ToolValidationResult } from '../types/ToolValidationResult.js';
 

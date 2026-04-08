@@ -2,7 +2,7 @@ import boxen from 'boxen';
 import chalk from 'chalk';
 import figlet from 'figlet';
 import ora, { type Ora } from 'ora';
-import { APP_NAME } from '../constants.js';
+import { APP_NAME } from '../constants/app.constant.js';
 import packageJson from '../../package.json' with { type: 'json' };
 
 export class Display {

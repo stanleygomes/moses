@@ -1,5 +1,7 @@
 import { confirm, input, select } from '@inquirer/prompts';
-import { AI_TOOLS, DEFAULT_MAX_DIFF_CHANGES, FEEDBACK_STYLES } from '../../constants.js';
+import { AI_TOOLS } from '../../constants/ai.constant.js';
+import { DEFAULT_MAX_DIFF_CHANGES } from '../../constants/ai.constant.js';
+import { FEEDBACK_STYLES } from '../../constants/feedback.constant.js';
 import { Display } from '../../utils/display.js';
 import { ToolValidator } from '../../utils/tool-validator.js';
 import type { AiToolKey } from '../../types/AiToolKey.js';
