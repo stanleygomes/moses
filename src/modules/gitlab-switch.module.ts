@@ -1,6 +1,6 @@
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
-import { GitlabSwitchHandler } from '../services/gitlab-switch.handler.js';
+import { GitlabInstanceManager } from '../services/gitlab-instance-manager.service.js';
 
 export class GitlabSwitchModule {
   static async run(): Promise<void> {
@@ -10,13 +10,13 @@ export class GitlabSwitchModule {
       const config = await ConfigStore.get();
 
       if (!config || config.gitlabs.length === 0) {
-        GitlabSwitchHandler.displayNoInstances();
+        GitlabInstanceManager.displayNoInstances();
         return;
       }
 
-      await GitlabSwitchHandler.promptAndSwitch(config);
+      await GitlabInstanceManager.promptAndSwitch(config);
     } catch (error) {
-      GitlabSwitchHandler.handleError(error);
+      GitlabInstanceManager.handleSwitchError(error);
     }
   }
 }

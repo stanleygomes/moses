@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import { DEFAULT_REPOS_DIR } from '../constants/paths.constant.js';
 
-export class RepositoryService {
+export class GitOperationsService {
   private static normalize(url: string): string {
     return url
       .replace(/\.git$/, '')
@@ -18,12 +18,12 @@ export class RepositoryService {
         stdio: ['ignore', 'pipe', 'ignore'],
         encoding: 'utf-8',
       });
-      const normalizedTarget = RepositoryService.normalize(targetRemoteUrl);
+      const normalizedTarget = GitOperationsService.normalize(targetRemoteUrl);
 
       return remotes.split('\n').some((line) => {
         const match = line.match(/\t(\S+)\s+\((?:fetch|push)\)/);
         if (match) {
-          return RepositoryService.normalize(match[1]) === normalizedTarget;
+          return GitOperationsService.normalize(match[1]) === normalizedTarget;
         }
         return false;
       });

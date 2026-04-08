@@ -1,14 +1,14 @@
 import { DEFAULT_CONTEXT_DIR } from '../constants/paths.constant.js';
-import { AiReviewService } from './ai-tools.js';
-import { ContextService } from './context.js';
-import { ContextScannerService } from './context-scanner.js';
-import { MarkdownService } from './markdown.js';
+import { AiReviewService } from './ai-review.service.js';
+import { ContextManager } from './context-manager.service.js';
+import { RepoScanner } from './repo-scanner.service.js';
+import { MrMarkdownFormatter } from './mr-markdown-formatter.service.js';
 import { Display } from '../utils/display.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 import type { ValidateOptions } from '../types/validate-options.type.js';
 import type { MergeRequestBundle } from '../types/merge-request-bundle.type.js';
 
-export class ValidateReviewRunner {
+export class ReviewOrchestrator {
   static async runReviewTask(
     url: string,
     data: MergeRequestBundle,
@@ -18,17 +18,17 @@ export class ValidateReviewRunner {
   ): Promise<void> {
     const markdownSpinner = Display.spinner('Preparing context and diff...');
     try {
-      await ContextService.ensureDefaultContextFiles();
-      let contextPrompt = await ContextService.readContextPrompt(options.prompt ?? '');
+      await ContextManager.ensureDefaultContextFiles();
+      let contextPrompt = await ContextManager.readContextPrompt(options.prompt ?? '');
 
       if (repoPath) {
-        const repoContext = await ContextScannerService.scanRepoForContext(repoPath);
+        const repoContext = await RepoScanner.scanRepoForContext(repoPath);
         if (repoContext) {
           contextPrompt = `${contextPrompt}\n${repoContext}`;
         }
       }
 
-      const markdown = MarkdownService.buildMergeRequestMarkdown({
+      const markdown = MrMarkdownFormatter.buildMergeRequestMarkdown({
         mr: data.mr,
         diffs: data.diffs,
         commits: data.commits,

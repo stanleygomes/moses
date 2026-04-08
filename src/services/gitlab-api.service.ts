@@ -5,7 +5,7 @@ interface GitlabUser {
   username: string;
 }
 
-export class GitlabService {
+export class GitlabApiService {
   private static createClient(baseURL: string, token: string): AxiosInstance {
     return axios.create({
       baseURL,
@@ -35,8 +35,8 @@ export class GitlabService {
   }
 
   static async validateToken(baseURL: string, token: string): Promise<GitlabUser> {
-    const client = GitlabService.createClient(baseURL, token);
-    const response = await GitlabService.withRetry(() => client.get<GitlabUser>('/api/v4/user'));
+    const client = GitlabApiService.createClient(baseURL, token);
+    const response = await GitlabApiService.withRetry(() => client.get<GitlabUser>('/api/v4/user'));
     return response.data;
   }
 
@@ -46,19 +46,19 @@ export class GitlabService {
     projectId: string,
     mrIid: string,
   ): Promise<MergeRequestBundle> {
-    const client = GitlabService.createClient(baseURL, token);
+    const client = GitlabApiService.createClient(baseURL, token);
     const [mr, diffs, commits] = await Promise.all([
-      GitlabService.withRetry(() =>
+      GitlabApiService.withRetry(() =>
         client.get<MergeRequestBundle['mr']>(
           `/api/v4/projects/${projectId}/merge_requests/${mrIid}`,
         ),
       ),
-      GitlabService.withRetry(() =>
+      GitlabApiService.withRetry(() =>
         client.get<MergeRequestBundle['diffs']>(
           `/api/v4/projects/${projectId}/merge_requests/${mrIid}/diffs`,
         ),
       ),
-      GitlabService.withRetry(() =>
+      GitlabApiService.withRetry(() =>
         client.get<MergeRequestBundle['commits']>(
           `/api/v4/projects/${projectId}/merge_requests/${mrIid}/commits`,
         ),

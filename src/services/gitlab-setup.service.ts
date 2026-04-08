@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { UrlParser } from '../utils/url.util.js';
 import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
-import { GitlabService } from './gitlab.js';
+import { GitlabApiService } from './gitlab-api.service.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
 export interface GitlabSetupData {
@@ -12,7 +12,7 @@ export interface GitlabSetupData {
   token: string;
 }
 
-export class GitlabWizard {
+export class GitlabSetupWizard {
   static async promptGitlabSetup(existingConfig: MosesConfig | null): Promise<GitlabSetupData> {
     Display.section('📋 GITLAB CONFIGURATION');
     Display.info(
@@ -26,7 +26,7 @@ export class GitlabWizard {
       schema: z.string().min(1, 'Nickname is required'),
     });
 
-    const url = await GitlabWizard.chooseGitlabBaseUrl();
+    const url = await GitlabSetupWizard.chooseGitlabBaseUrl();
     const settingsBase = url.replace(/\/$/, '');
     Display.info(`💡 Create a new Personal Access Token with "api" scope here:`);
     Display.link(`${settingsBase}/-/user_settings/personal_access_tokens`);
@@ -38,7 +38,7 @@ export class GitlabWizard {
       });
 
       try {
-        await GitlabWizard.validateGitlabToken(url, token);
+        await GitlabSetupWizard.validateGitlabToken(url, token);
         break;
       } catch {
         // Just loop back on invalid token
@@ -73,7 +73,7 @@ export class GitlabWizard {
   static async validateGitlabToken(gitlabUrl: string, token: string) {
     const tokenSpinner = Display.spinner('Validating token...');
     try {
-      const user = await GitlabService.validateToken(gitlabUrl, token);
+      const user = await GitlabApiService.validateToken(gitlabUrl, token);
       tokenSpinner.succeed(`Valid token! User: @${user.username}`);
       return user;
     } catch (error: unknown) {

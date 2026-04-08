@@ -9,7 +9,7 @@ interface BuildMergeRequestMarkdownInput {
   url: string;
 }
 
-export class MarkdownService {
+export class MrMarkdownFormatter {
   static buildMergeRequestMarkdown({
     mr,
     diffs,

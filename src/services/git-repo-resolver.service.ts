@@ -1,15 +1,15 @@
-import { RepositoryService } from './repository.js';
+import { GitOperationsService } from './git-operations.service.js';
 import { UrlParser } from '../utils/url.util.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
-export class RepositoryResolverHandler {
+export class GitRepoResolver {
   static async resolveRepositoryPath(url: string, config: MosesConfig): Promise<string | null> {
-    const targetRepoUrl = RepositoryService.getRepoUrlFromMrUrl(url);
+    const targetRepoUrl = GitOperationsService.getRepoUrlFromMrUrl(url);
 
-    if (RepositoryService.isCurrentDirMatchingRepo(targetRepoUrl)) {
+    if (GitOperationsService.isCurrentDirMatchingRepo(targetRepoUrl)) {
       Display.success('✅ Repository detected in current directory. Using local context.');
       return process.cwd();
     }
@@ -40,7 +40,10 @@ export class RepositoryResolverHandler {
 
     const spinner = Display.spinner('Cloning repository...');
     try {
-      const repoPath = await RepositoryService.cloneRepository(targetRepoUrl, gitlabConfig.token);
+      const repoPath = await GitOperationsService.cloneRepository(
+        targetRepoUrl,
+        gitlabConfig.token,
+      );
       spinner.succeed(`Repository cloned to: ${repoPath}`);
       return repoPath;
     } catch (error) {

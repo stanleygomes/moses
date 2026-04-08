@@ -1,12 +1,12 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { GitlabService } from './gitlab.js';
+import { GitlabApiService } from './gitlab-api.service.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
 import { UrlParser } from '../utils/url.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
-export class ValidateGitlabDataProvider {
+export class GitlabDataProvider {
   static async fetchMrData(url: string, config: MosesConfig) {
     let parsedUrl;
     try {
@@ -24,7 +24,7 @@ export class ValidateGitlabDataProvider {
 
     const spinner = Display.spinner('Fetching MR data...');
     try {
-      const data = await GitlabService.getMergeRequestData(
+      const data = await GitlabApiService.getMergeRequestData(
         gitlabConfig.url,
         gitlabConfig.token,
         parsedUrl.projectId,

@@ -14,7 +14,7 @@ export interface AiSetupData {
   maxDiffChanges: number;
 }
 
-export class AiWizard {
+export class AiSetupWizard {
   static async promptAiSetup(existingConfig: MosesConfig | null): Promise<AiSetupData> {
     Display.section('🤖 AI TOOL CONFIGURATION');
     Display.info(
@@ -22,14 +22,18 @@ export class AiWizard {
     );
     Display.info('   is installed and configured with the necessary API keys.');
 
-    const tool = await AiWizard.chooseAiTool(existingConfig?.ai?.tool);
+    const tool = await AiSetupWizard.chooseAiTool(existingConfig?.ai?.tool);
 
     Display.info('\n💡 Feedback Style: Choose how you want the AI to post comments on the MR.');
-    const feedbackStyle = await AiWizard.chooseFeedbackStyle(existingConfig?.ai?.feedbackStyle);
+    const feedbackStyle = await AiSetupWizard.chooseFeedbackStyle(
+      existingConfig?.ai?.feedbackStyle,
+    );
 
     Display.info('\n💡 Diff Limits: Large files can be slow and expensive (tokens).');
     Display.info('   This limit skips files with too many changes.');
-    const maxDiffChanges = await AiWizard.chooseMaxDiffChanges(existingConfig?.ai?.maxDiffChanges);
+    const maxDiffChanges = await AiSetupWizard.chooseMaxDiffChanges(
+      existingConfig?.ai?.maxDiffChanges,
+    );
 
     return { tool, feedbackStyle, maxDiffChanges };
   }

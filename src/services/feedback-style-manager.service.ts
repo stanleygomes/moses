@@ -5,7 +5,7 @@ import { Prompt } from '../utils/prompt.util.js';
 import type { FeedbackStyle } from '../types/feedback-style.type.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
-export class FeedbackStyleHandler {
+export class FeedbackStyleManager {
   static async promptForStyle(currentStyle?: FeedbackStyle): Promise<FeedbackStyle> {
     return Prompt.select<FeedbackStyle>({
       message: 'Choose MR feedback style:',

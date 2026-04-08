@@ -1,6 +1,6 @@
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
-import { DiffLimitHandler } from '../services/diff-limit.handler.js';
+import { DiffLimitManager } from '../services/diff-limit-manager.service.js';
 
 export class SetDiffLimitModule {
   static async run(): Promise<void> {
@@ -8,11 +8,11 @@ export class SetDiffLimitModule {
 
     try {
       const config = await ConfigStore.get();
-      const limit = await DiffLimitHandler.promptForLimit(config.ai?.maxDiffChanges);
+      const limit = await DiffLimitManager.promptForLimit(config.ai?.maxDiffChanges);
 
-      await DiffLimitHandler.updateAndSave(config, limit);
+      await DiffLimitManager.updateAndSave(config, limit);
     } catch (error) {
-      DiffLimitHandler.handleError(error);
+      DiffLimitManager.handleError(error);
     }
   }
 }

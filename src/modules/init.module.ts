@@ -2,7 +2,7 @@ import { MESSAGES } from '../constants/messages.constant.js';
 import { Display } from '../utils/display.util.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Prompt } from '../utils/prompt.util.js';
-import { WizardRunner } from '../services/wizard-runner.js';
+import { SetupWizardFlow } from '../services/wizard-flow.service.js';
 
 export class InitModule {
   static async run(): Promise<void> {
@@ -21,6 +21,6 @@ export class InitModule {
       return;
     }
 
-    await WizardRunner.run(existingConfig);
+    await SetupWizardFlow.run(existingConfig);
   }
 }

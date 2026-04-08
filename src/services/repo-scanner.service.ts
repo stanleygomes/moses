@@ -6,7 +6,7 @@ import { CONTEXT_FILE_PATTERNS } from '../constants/context.constant.js';
  * Scans a repository directory for files matching the context patterns.
  * Returns the contents of these files formatted for LLM context.
  */
-export class ContextScannerService {
+export class RepoScanner {
   static async scanRepoForContext(repoPath: string): Promise<string> {
     const contents: string[] = [];
 

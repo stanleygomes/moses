@@ -1,6 +1,6 @@
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
-import { GitlabListHandler } from '../services/gitlab-list.handler.js';
+import { GitlabInstanceManager } from '../services/gitlab-instance-manager.service.js';
 
 export class GitlabListModule {
   static async run(): Promise<void> {
@@ -10,13 +10,13 @@ export class GitlabListModule {
       const config = await ConfigStore.get();
 
       if (!config || config.gitlabs.length === 0) {
-        GitlabListHandler.displayNoInstances();
+        GitlabInstanceManager.displayNoInstances();
         return;
       }
 
-      GitlabListHandler.displayInstances(config);
+      GitlabInstanceManager.displayInstances(config);
     } catch (error) {
-      GitlabListHandler.handleError(error);
+      GitlabInstanceManager.handleLoadError(error);
     }
   }
 }

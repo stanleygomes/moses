@@ -5,7 +5,7 @@ import { Prompt } from '../utils/prompt.util.js';
 import { diffLimitSchema } from '../validators/diff-limit.validator.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
-export class DiffLimitHandler {
+export class DiffLimitManager {
   static async promptForLimit(currentLimit?: number): Promise<number> {
     const fallback =
       Number.isInteger(currentLimit) && currentLimit! > 0 ? currentLimit : DEFAULT_MAX_DIFF_CHANGES;

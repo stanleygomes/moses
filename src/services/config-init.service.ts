@@ -1,10 +1,10 @@
 import { CONFIG_VERSION } from '../constants/app.constant.js';
 import { DEFAULT_OUTPUT_DIR } from '../constants/paths.constant.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
-import type { GitlabSetupData } from './gitlab-wizard.js';
-import type { AiSetupData } from './ai-wizard.js';
+import type { GitlabSetupData } from './gitlab-setup.service.js';
+import type { AiSetupData } from './ai-setup.service.js';
 
-export class InitConfigBuilder {
+export class ConfigInitializer {
   static build(
     gitlab: GitlabSetupData,
     ai: AiSetupData,

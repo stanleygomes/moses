@@ -7,20 +7,20 @@ import { DEFAULT_CONTEXT_DIR } from '../constants/paths.constant.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROMPTS_DIR = path.resolve(__dirname, '../prompts');
 
-export class ContextService {
+export class ContextManager {
   private static resolveHome(value: string): string {
     return value.replace(/^~(?=\/|$)/, os.homedir());
   }
 
   static getContextDir(): string {
-    return ContextService.resolveHome(DEFAULT_CONTEXT_DIR);
+    return ContextManager.resolveHome(DEFAULT_CONTEXT_DIR);
   }
 
   static async ensureDefaultContextFiles(): Promise<{
     contextDir: string;
     files: string[];
   }> {
-    const contextDir = ContextService.getContextDir();
+    const contextDir = ContextManager.getContextDir();
     await fs.mkdir(contextDir, { recursive: true });
 
     const files = await fs.readdir(PROMPTS_DIR);
@@ -38,7 +38,7 @@ export class ContextService {
   }
 
   static async readContextPrompt(extraPrompt = ''): Promise<string> {
-    const contextDir = ContextService.getContextDir();
+    const contextDir = ContextManager.getContextDir();
     const files = await fs.readdir(contextDir);
     const mdFiles = files.filter((file) => file.endsWith('.md')).sort();
 
