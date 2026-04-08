@@ -8,4 +8,5 @@ export interface MosesConfig {
   gitlabs: GitlabInstance[];
   ai: AiConfig;
   output: OutputConfig;
+  lastUpdateCheck?: string;
 }
