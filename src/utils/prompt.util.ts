@@ -1,6 +1,7 @@
-import { input, select } from '@inquirer/prompts';
+import { confirm, input, select } from '@inquirer/prompts';
 import type { AskAndParseParams } from '../types/ask-params.type.js';
 import type { SelectAndParseParams } from '../types/select-params.type.js';
+import type { ConfirmParams } from '../types/confirm-params.type.js';
 
 export class Prompt {
   public static async ask<T>({
@@ -33,6 +34,19 @@ export class Prompt {
       message,
       choices,
       default: defaultValue,
+    });
+  }
+
+  public static async confirm({
+    message,
+    default: defaultValue,
+    initialValue,
+  }: ConfirmParams): Promise<boolean> {
+    if (initialValue !== undefined && initialValue !== null) return initialValue;
+
+    return confirm({
+      message,
+      default: defaultValue ?? true,
     });
   }
 }

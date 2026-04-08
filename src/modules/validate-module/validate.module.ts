@@ -1,12 +1,12 @@
-import { confirm } from '@inquirer/prompts';
+import { MESSAGES } from '../../constants/messages.constant.js';
 import { Display } from '../../utils/display.util.js';
-import { ValidateConfigLoader } from './load-config.js';
 import { ValidateGitlabDataProvider } from './gitlab.js';
 import { DiffLimitChecker } from './check-limits.js';
 import { ValidateReviewRunner } from './review.js';
 import { RepositoryService } from '../../services/repository.js';
 import { UrlParser } from '../../utils/url.util.js';
-import { ConfigStore } from '../../utils/config-store.util.js';
+import { ConfigStore } from '../../store/config.store.js';
+import { Prompt } from '../../utils/prompt.util.js';
 import type { ValidateOptions } from '../../types/validate-options.type.js';
 
 export class ValidateModule {
@@ -14,8 +14,11 @@ export class ValidateModule {
     Display.banner();
     Display.info(`🔗 Analyzing: ${url}`);
 
-    const config = await ValidateConfigLoader.loadValidatedConfig();
-    if (!config) return;
+    const config = await ConfigStore.getSafe();
+    if (!config) {
+      Display.error(MESSAGES.noConfig);
+      return;
+    }
 
     const data = await ValidateGitlabDataProvider.fetchMrData(url, config);
     if (!data) return;
@@ -30,7 +33,7 @@ export class ValidateModule {
       repoPath = process.cwd();
     } else {
       Display.info('📂 Current directory does not match the MR repository.');
-      const shouldDownload = await confirm({
+      const shouldDownload = await Prompt.confirm({
         message:
           'Do you want to download the repository locally to provide more context to the AI?',
         default: true,

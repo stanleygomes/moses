@@ -1,17 +1,15 @@
 import { CONFIG_VERSION } from '../../constants/app.constant.js';
 import { DEFAULT_OUTPUT_DIR } from '../../constants/paths.constant.js';
-import { ContextService } from '../../services/context.js';
-import { ConfigStore } from '../../utils/config-store.util.js';
 import type { MosesConfig } from '../../types/moses-config.type.js';
 import type { GitlabSetupData } from './gitlab-wizard.js';
 import type { AiSetupData } from './ai-wizard.js';
 
 export class InitConfigBuilder {
-  static async buildAndSaveConfig(
+  static build(
     gitlab: GitlabSetupData,
     ai: AiSetupData,
     existing: MosesConfig | null,
-  ): Promise<{ configPath: string; contextInfo: { contextDir: string; files: string[] } }> {
+  ): MosesConfig {
     const baseConfig: MosesConfig = existing ?? {
       version: CONFIG_VERSION,
       defaultGitlab: gitlab.name,
@@ -35,7 +33,7 @@ export class InitConfigBuilder {
       default: item.name === gitlab.name,
     }));
 
-    const config: MosesConfig = {
+    return {
       ...baseConfig,
       version: CONFIG_VERSION,
       defaultGitlab: gitlab.name,
@@ -49,9 +47,5 @@ export class InitConfigBuilder {
         maxDiffChanges: ai.maxDiffChanges,
       },
     };
-
-    const configPath = await ConfigStore.saveConfig(config);
-    const contextInfo = await ContextService.ensureDefaultContextFiles();
-    return { configPath, contextInfo };
   }
 }
