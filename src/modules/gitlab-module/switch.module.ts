@@ -1,7 +1,7 @@
-import { select } from '@inquirer/prompts';
 import type { MosesConfig } from '../../types/moses-config.type.js';
 import { ConfigStore } from '../../store/config.store.js';
 import { Display } from '../../utils/display.util.js';
+import { Prompt } from '../../utils/prompt.util.js';
 
 export class GitlabSwitchModule {
   static async run(): Promise<void> {
@@ -31,7 +31,7 @@ export class GitlabSwitchModule {
       value: gitlab.name,
     }));
 
-    const nextDefault = await select({
+    const nextDefault = await Prompt.select<string>({
       message: 'Choose the default GitLab instance:',
       choices,
       default: config.defaultGitlab,

@@ -1,40 +1,50 @@
-import { input } from '@inquirer/prompts';
 import { DEFAULT_MAX_DIFF_CHANGES } from '../../constants/ai.constant.js';
-import { ConfigStore } from '../../utils/config-store.util.js';
+import { ConfigStore } from '../../store/config.store.js';
 import { Display } from '../../utils/display.util.js';
+import { Prompt } from '../../utils/prompt.util.js';
+import { diffLimitSchema } from '../../validators/diff-limit.validator.js';
 import type { MosesConfig } from '../../types/moses-config.type.js';
-import { UpdateConfigLoaderModule } from './load-config.module.js';
 
 export class SetDiffLimitModule {
   static async run(): Promise<void> {
     Display.banner();
-    const config = await UpdateConfigLoaderModule.loadConfigOrExit();
-    if (!config) return;
 
-    const current = config.ai?.maxDiffChanges;
-    const fallback = Number.isInteger(current) && current > 0 ? current : DEFAULT_MAX_DIFF_CHANGES;
+    try {
+      const config = await ConfigStore.get();
+      const limit = await this.promptForLimit(config.ai?.maxDiffChanges);
 
-    while (true) {
-      const value = await input({
-        message: 'Maximum allowed diff changes before interrupting validation:',
-        default: String(fallback),
-      });
-      const parsed = Number.parseInt(value, 10);
-      if (!Number.isInteger(parsed) || parsed <= 0) {
-        Display.error('Invalid value. Please inform a positive integer.');
-        continue;
-      }
-
-      const nextConfig: MosesConfig = {
-        ...config,
-        ai: {
-          ...config.ai,
-          maxDiffChanges: parsed,
-        },
-      };
-      await ConfigStore.saveConfig(nextConfig);
-      Display.success(`Diff limit updated successfully to ${parsed}.`);
-      return;
+      await this.updateAndSave(config, limit);
+    } catch (error) {
+      this.handleError(error);
     }
+  }
+
+  private static async promptForLimit(currentLimit?: number): Promise<number> {
+    const fallback =
+      Number.isInteger(currentLimit) && currentLimit! > 0 ? currentLimit : DEFAULT_MAX_DIFF_CHANGES;
+
+    return Prompt.ask<number>({
+      message: 'Maximum allowed diff changes before interrupting validation:',
+      default: String(fallback),
+      schema: diffLimitSchema,
+    });
+  }
+
+  private static async updateAndSave(config: MosesConfig, limit: number): Promise<void> {
+    const nextConfig: MosesConfig = {
+      ...config,
+      ai: {
+        ...config.ai,
+        maxDiffChanges: limit,
+      },
+    };
+
+    await ConfigStore.set(nextConfig);
+    Display.success(`Diff limit updated successfully to ${limit}.`);
+  }
+
+  private static handleError(error: unknown): void {
+    Display.error('Could not update diff limit.');
+    console.log(error);
   }
 }
