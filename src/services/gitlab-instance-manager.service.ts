@@ -14,7 +14,7 @@ export class GitlabInstanceManager {
     Display.section('📋 CONFIGURED GITLAB INSTANCES');
 
     config.gitlabs.forEach((gitlab) => {
-      this.displayInstanceDetails(gitlab, gitlab.name === config.defaultGitlab);
+      GitlabInstanceManager.displayInstanceDetails(gitlab, gitlab.name === config.defaultGitlab);
     });
 
     Display.info('TIP: You can use "moses gitlab default" to change the default instance.');
@@ -30,7 +30,7 @@ export class GitlabInstanceManager {
       `   Token: ${gitlab.token.replace(/./g, '*').substring(0, 10)}... (last 4 chars: ${gitlab.token.slice(-4)})`,
     );
 
-    console.log('');
+    GitlabInstanceManager.printSpacing();
   }
 
   static async promptAndSwitch(config: MosesConfig): Promise<void> {
@@ -39,11 +39,7 @@ export class GitlabInstanceManager {
       return;
     }
 
-    const choices = config.gitlabs.map((gitlab) => ({
-      name: `${gitlab.name} (${gitlab.url})`,
-      value: gitlab.name,
-    }));
-
+    const choices = GitlabInstanceManager.buildInstanceChoices(config);
     const nextDefault = await Prompt.select<string>({
       message: 'Choose the default GitLab instance:',
       choices,
@@ -54,15 +50,10 @@ export class GitlabInstanceManager {
   }
 
   static async updateConfig(config: MosesConfig, nextDefault: string): Promise<void> {
-    const updatedGitlabs = config.gitlabs.map((gitlab) => ({
-      ...gitlab,
-      default: gitlab.name === nextDefault,
-    }));
-
     const nextConfig: MosesConfig = {
       ...config,
       defaultGitlab: nextDefault,
-      gitlabs: updatedGitlabs,
+      gitlabs: GitlabInstanceManager.markDefaultGitlab(config.gitlabs, nextDefault),
     };
 
     await ConfigStore.set(nextConfig);
@@ -78,5 +69,26 @@ export class GitlabInstanceManager {
   static handleSwitchError(error: unknown): void {
     Display.error('Could not switch GitLab instance.');
     console.log(error);
+  }
+
+  private static buildInstanceChoices(config: MosesConfig): { name: string; value: string }[] {
+    return config.gitlabs.map((gitlab) => ({
+      name: `${gitlab.name} (${gitlab.url})`,
+      value: gitlab.name,
+    }));
+  }
+
+  private static markDefaultGitlab(
+    gitlabs: GitlabInstance[],
+    nextDefault: string,
+  ): GitlabInstance[] {
+    return gitlabs.map((gitlab) => ({
+      ...gitlab,
+      default: gitlab.name === nextDefault,
+    }));
+  }
+
+  private static printSpacing(): void {
+    console.log('');
   }
 }

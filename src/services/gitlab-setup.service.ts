@@ -14,60 +14,22 @@ export interface GitlabSetupData {
 
 export class GitlabSetupWizard {
   static async promptGitlabSetup(existingConfig: MosesConfig | null): Promise<GitlabSetupData> {
-    Display.section('📋 GITLAB CONFIGURATION');
-    Display.info(
-      '💡 TIP: Use a nickname to Identify this GitLab config (e.g. "work", "gitlab-org").',
-    );
-    Display.info('   You can run "init" again later to add more instances.');
-
-    const name = await Prompt.ask<string>({
-      message: 'Instance nickname (e.g., "work", "gitlab-com" - to identify this GitLab config):',
-      default: existingConfig?.defaultGitlab ?? 'gitlab-main',
-      schema: z.string().min(1, 'Nickname is required'),
-    });
-
+    GitlabSetupWizard.displayIntro();
+    const name = await GitlabSetupWizard.promptInstanceName(existingConfig);
     const url = await GitlabSetupWizard.chooseGitlabBaseUrl();
-    const settingsBase = url.replace(/\/$/, '');
-    Display.info(`💡 Create a new Personal Access Token with "api" scope here:`);
-    Display.link(`${settingsBase}/-/user_settings/personal_access_tokens`);
-
-    let token = '';
-    while (true) {
-      token = await Prompt.password({
-        message: 'Personal Access Token (scope: api):',
-      });
-
-      try {
-        await GitlabSetupWizard.validateGitlabToken(url, token);
-        break;
-      } catch {
-        // Just loop back on invalid token
-      }
-    }
+    GitlabSetupWizard.displayTokenHelp(url);
+    const token = await GitlabSetupWizard.promptValidatedToken(url);
 
     return { name, url, token };
   }
 
   static async chooseGitlabBaseUrl(): Promise<string> {
-    const gitlabType = await Prompt.select<string>({
-      message: 'Which GitLab do you want to use?',
-      choices: [
-        { name: 'GitLab.com (gitlab.com) — Default', value: 'default' },
-        { name: 'Self-Hosted GitLab (provide a custom URL)', value: 'self' },
-      ],
-    });
-
+    const gitlabType = await GitlabSetupWizard.promptGitlabType();
     if (gitlabType === 'default') {
       return 'https://gitlab.com';
     }
 
-    return Prompt.ask<string>({
-      message: 'GitLab URL:',
-      default: 'https://gitlab.your-domain.com',
-      schema: z.string().refine((val) => UrlParser.isValidGitlabUrl(val), {
-        message: 'Invalid URL. Use https:// and a valid domain.',
-      }),
-    });
+    return GitlabSetupWizard.promptSelfHostedGitlabUrl();
   }
 
   static async validateGitlabToken(gitlabUrl: string, token: string) {
@@ -83,6 +45,63 @@ export class GitlabSetupWizard {
       const settingsBase = gitlabUrl.replace(/\/$/, '');
       Display.link(`   ${settingsBase}/-/user_settings/personal_access_tokens`);
       throw error;
+    }
+  }
+
+  private static displayIntro(): void {
+    Display.section('📋 GITLAB CONFIGURATION');
+    Display.info(
+      '💡 TIP: Use a nickname to Identify this GitLab config (e.g. "work", "gitlab-org").',
+    );
+    Display.info('   You can run "init" again later to add more instances.');
+  }
+
+  private static async promptInstanceName(existingConfig: MosesConfig | null): Promise<string> {
+    return Prompt.ask<string>({
+      message: 'Instance nickname (e.g., "work", "gitlab-com" - to identify this GitLab config):',
+      default: existingConfig?.defaultGitlab ?? 'gitlab-main',
+      schema: z.string().min(1, 'Nickname is required'),
+    });
+  }
+
+  private static async promptGitlabType(): Promise<'default' | 'self'> {
+    return Prompt.select<'default' | 'self'>({
+      message: 'Which GitLab do you want to use?',
+      choices: [
+        { name: 'GitLab.com (gitlab.com) — Default', value: 'default' },
+        { name: 'Self-Hosted GitLab (provide a custom URL)', value: 'self' },
+      ],
+    });
+  }
+
+  private static async promptSelfHostedGitlabUrl(): Promise<string> {
+    return Prompt.ask<string>({
+      message: 'GitLab URL:',
+      default: 'https://gitlab.your-domain.com',
+      schema: z.string().refine((val) => UrlParser.isValidGitlabUrl(val), {
+        message: 'Invalid URL. Use https:// and a valid domain.',
+      }),
+    });
+  }
+
+  private static displayTokenHelp(url: string): void {
+    const settingsBase = url.replace(/\/$/, '');
+    Display.info('💡 Create a new Personal Access Token with "api" scope here:');
+    Display.link(`${settingsBase}/-/user_settings/personal_access_tokens`);
+  }
+
+  private static async promptValidatedToken(url: string): Promise<string> {
+    while (true) {
+      const token = await Prompt.password({
+        message: 'Personal Access Token (scope: api):',
+      });
+
+      try {
+        await GitlabSetupWizard.validateGitlabToken(url, token);
+        return token;
+      } catch {
+        // Just loop back on invalid token
+      }
     }
   }
 }

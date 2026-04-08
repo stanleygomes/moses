@@ -48,26 +48,33 @@ export class GitlabApiService {
   ): Promise<MergeRequestBundle> {
     const client = GitlabApiService.createClient(baseURL, token);
     const [mr, diffs, commits] = await Promise.all([
-      GitlabApiService.withRetry(() =>
-        client.get<MergeRequestBundle['mr']>(
-          `/api/v4/projects/${projectId}/merge_requests/${mrIid}`,
-        ),
-      ),
-      GitlabApiService.withRetry(() =>
-        client.get<MergeRequestBundle['diffs']>(
-          `/api/v4/projects/${projectId}/merge_requests/${mrIid}/diffs`,
-        ),
-      ),
-      GitlabApiService.withRetry(() =>
-        client.get<MergeRequestBundle['commits']>(
-          `/api/v4/projects/${projectId}/merge_requests/${mrIid}/commits`,
-        ),
-      ),
+      GitlabApiService.fetchMergeRequest(client, projectId, mrIid),
+      GitlabApiService.fetchMergeRequestDiffs(client, projectId, mrIid),
+      GitlabApiService.fetchMergeRequestCommits(client, projectId, mrIid),
     ]);
     return {
       mr: mr.data,
       diffs: diffs.data,
       commits: commits.data,
     };
+  }
+
+  private static getMergeRequestBasePath(projectId: string, mrIid: string): string {
+    return `/api/v4/projects/${projectId}/merge_requests/${mrIid}`;
+  }
+
+  private static fetchMergeRequest(client: AxiosInstance, projectId: string, mrIid: string) {
+    const route = GitlabApiService.getMergeRequestBasePath(projectId, mrIid);
+    return GitlabApiService.withRetry(() => client.get<MergeRequestBundle['mr']>(route));
+  }
+
+  private static fetchMergeRequestDiffs(client: AxiosInstance, projectId: string, mrIid: string) {
+    const route = `${GitlabApiService.getMergeRequestBasePath(projectId, mrIid)}/diffs`;
+    return GitlabApiService.withRetry(() => client.get<MergeRequestBundle['diffs']>(route));
+  }
+
+  private static fetchMergeRequestCommits(client: AxiosInstance, projectId: string, mrIid: string) {
+    const route = `${GitlabApiService.getMergeRequestBasePath(projectId, mrIid)}/commits`;
+    return GitlabApiService.withRetry(() => client.get<MergeRequestBundle['commits']>(route));
   }
 }

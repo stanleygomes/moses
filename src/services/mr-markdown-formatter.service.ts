@@ -17,19 +17,9 @@ export class MrMarkdownFormatter {
     url,
   }: BuildMergeRequestMarkdownInput): string {
     const createdAt = dayjs(mr.created_at).format('YYYY-MM-DD');
-    const changedFiles = Array.isArray(diffs) ? diffs.length : 0;
-    const additions = mr.changes_count ?? '?';
-
-    const commitLines = commits
-      .map((commit) => `- ${commit.short_id} — ${commit.title}`)
-      .join('\n');
-
-    const diffSections = diffs
-      .map((item) => {
-        const diff = item.diff ?? '';
-        return `### \`${item.new_path ?? item.old_path}\`\n\n\`\`\`diff\n${diff}\n\`\`\`\n`;
-      })
-      .join('\n');
+    const commitLines = MrMarkdownFormatter.formatCommitLines(commits);
+    const diffSections = MrMarkdownFormatter.formatDiffSections(diffs);
+    const stats = MrMarkdownFormatter.buildStatsSection(diffs, mr.changes_count);
 
     return `# MR #${mr.iid} — ${mr.title}
 
@@ -40,8 +30,7 @@ export class MrMarkdownFormatter {
 
 ## 📊 Statistics
 
-- Changed files: ${changedFiles}
-- Changes (GitLab): ${additions}
+${stats}
 
 ## 📝 Description
 
@@ -55,6 +44,29 @@ ${commitLines || '_No commits_'}
 
 ${diffSections || '_No diffs_'}
 `;
+  }
+
+  private static buildStatsSection(
+    diffs: MergeRequestBundle['diffs'],
+    changesCount: string | number | null | undefined,
+  ): string {
+    const changedFiles = Array.isArray(diffs) ? diffs.length : 0;
+    const additions = changesCount ?? '?';
+    return `- Changed files: ${changedFiles}
+- Changes (GitLab): ${additions}`;
+  }
+
+  private static formatCommitLines(commits: MergeRequestBundle['commits']): string {
+    return commits.map((commit) => `- ${commit.short_id} — ${commit.title}`).join('\n');
+  }
+
+  private static formatDiffSections(diffs: MergeRequestBundle['diffs']): string {
+    return diffs
+      .map((item) => {
+        const diff = item.diff ?? '';
+        return `### \`${item.new_path ?? item.old_path}\`\n\n\`\`\`diff\n${diff}\n\`\`\`\n`;
+      })
+      .join('\n');
   }
 
   static countDiffChanges(diffs: MergeRequestDiff[] = []): number {

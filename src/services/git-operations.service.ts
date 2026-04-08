@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execFileSync, execSync } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -33,24 +33,14 @@ export class GitOperationsService {
   }
 
   static async cloneRepository(repoUrl: string, token: string): Promise<string> {
-    const reposDir = DEFAULT_REPOS_DIR.replace(/^~(?=\/|$)/, os.homedir());
-    await fs.mkdir(reposDir, { recursive: true });
-
-    const url = new URL(repoUrl);
-    const dirName = `${url.hostname}${url.pathname.replace(/\//g, '-')}`.replace(/\.git$/, '');
-    const targetPath = path.join(reposDir, dirName);
-
-    try {
-      await fs.access(path.join(targetPath, '.git'));
+    const targetPath = await GitOperationsService.resolveTargetPath(repoUrl);
+    if (await GitOperationsService.isRepositoryCloned(targetPath)) {
       return targetPath;
-    } catch {
-      // Continue to clone
     }
 
-    const authUrl = repoUrl.replace(/^https:\/\//, `https://oauth2:${token}@`);
-
+    const authUrl = GitOperationsService.buildAuthenticatedUrl(repoUrl, token);
     try {
-      execSync(`git clone --depth 1 ${authUrl} ${targetPath}`, { stdio: 'inherit' });
+      GitOperationsService.runClone(authUrl, targetPath);
       return targetPath;
     } catch (error) {
       throw new Error(
@@ -65,5 +55,36 @@ export class GitOperationsService {
     if (parts.length < 1) throw new Error('Invalid Merge Request URL');
 
     return `${url.origin}${parts[0]}.git`;
+  }
+
+  private static resolveReposDir(): string {
+    return DEFAULT_REPOS_DIR.replace(/^~(?=\/|$)/, os.homedir());
+  }
+
+  private static async resolveTargetPath(repoUrl: string): Promise<string> {
+    const reposDir = GitOperationsService.resolveReposDir();
+    await fs.mkdir(reposDir, { recursive: true });
+    const url = new URL(repoUrl);
+    const dirName = `${url.hostname}${url.pathname.replace(/\//g, '-')}`.replace(/\.git$/, '');
+    return path.join(reposDir, dirName);
+  }
+
+  private static async isRepositoryCloned(targetPath: string): Promise<boolean> {
+    try {
+      await fs.access(path.join(targetPath, '.git'));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private static buildAuthenticatedUrl(repoUrl: string, token: string): string {
+    return repoUrl.replace(/^https:\/\//, `https://oauth2:${token}@`);
+  }
+
+  private static runClone(authUrl: string, targetPath: string): void {
+    execFileSync('git', ['clone', '--depth', '1', authUrl, targetPath], {
+      stdio: 'inherit',
+    });
   }
 }

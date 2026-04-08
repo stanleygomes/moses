@@ -9,20 +9,15 @@ export class GitRepoResolver {
   static async resolveRepositoryPath(url: string, config: MosesConfig): Promise<string | null> {
     const targetRepoUrl = GitOperationsService.getRepoUrlFromMrUrl(url);
 
-    if (GitOperationsService.isCurrentDirMatchingRepo(targetRepoUrl)) {
-      Display.success('✅ Repository detected in current directory. Using local context.');
-      return process.cwd();
+    const localRepositoryPath = GitRepoResolver.resolveCurrentDirectoryRepository(targetRepoUrl);
+    if (localRepositoryPath) {
+      return localRepositoryPath;
     }
 
-    Display.info('📂 Current directory does not match the MR repository.');
-    const shouldDownload = await Prompt.confirm({
-      message: 'Do you want to download the repository locally to provide more context to the AI?',
-      default: true,
-    });
-
+    const shouldDownload = await GitRepoResolver.promptForRepositoryDownload();
     if (!shouldDownload) return null;
 
-    return this.downloadRepository(url, targetRepoUrl, config);
+    return GitRepoResolver.downloadRepository(url, targetRepoUrl, config);
   }
 
   private static async downloadRepository(
@@ -31,19 +26,44 @@ export class GitRepoResolver {
     config: MosesConfig,
   ): Promise<string | null> {
     const parsedUrl = UrlParser.parseMergeRequestUrl(url);
-    const gitlabConfig = ConfigStore.findGitlabInstance(config, parsedUrl.host);
+    const gitlabConfig = GitRepoResolver.findGitlabConfig(config, parsedUrl.host);
 
     if (!gitlabConfig) {
       Display.error(`No GitLab instance configured for host: ${parsedUrl.host}`);
       return null;
     }
 
+    return GitRepoResolver.cloneRepositoryWithFeedback(targetRepoUrl, gitlabConfig.token);
+  }
+
+  private static resolveCurrentDirectoryRepository(targetRepoUrl: string): string | null {
+    if (!GitOperationsService.isCurrentDirMatchingRepo(targetRepoUrl)) {
+      return null;
+    }
+
+    Display.success('✅ Repository detected in current directory. Using local context.');
+    return process.cwd();
+  }
+
+  private static async promptForRepositoryDownload(): Promise<boolean> {
+    Display.info('📂 Current directory does not match the MR repository.');
+    return Prompt.confirm({
+      message: 'Do you want to download the repository locally to provide more context to the AI?',
+      default: true,
+    });
+  }
+
+  private static findGitlabConfig(config: MosesConfig, host: string) {
+    return ConfigStore.findGitlabInstance(config, host);
+  }
+
+  private static async cloneRepositoryWithFeedback(
+    targetRepoUrl: string,
+    token: string,
+  ): Promise<string | null> {
     const spinner = Display.spinner('Cloning repository...');
     try {
-      const repoPath = await GitOperationsService.cloneRepository(
-        targetRepoUrl,
-        gitlabConfig.token,
-      );
+      const repoPath = await GitOperationsService.cloneRepository(targetRepoUrl, token);
       spinner.succeed(`Repository cloned to: ${repoPath}`);
       return repoPath;
     } catch (error) {
