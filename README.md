@@ -35,33 +35,54 @@ The command:
 
 ## Usage
 
-You can simply run
+The primary way to use Moses is by validating a Merge Request:
 
 ```bash
 moses validate https://gitlab.your-domain.com/group/project/-/merge_requests/123
 ```
 
-To know more about the commands, run:
+### Available Commands
+
+| Command                       | Description                                                  |
+| :---------------------------- | :----------------------------------------------------------- |
+| `moses init`                  | Interactive initial setup (GitLab instances, AI tools, etc.) |
+| `moses validate <url>`        | Fetches and analyzes a Merge Request, providing AI feedback  |
+| `moses gitlab list`           | Lists all your configured GitLab instances                   |
+| `moses gitlab default`        | Switches the active default GitLab instance                  |
+| `moses config feedback-style` | Updates the AI's feedback tone (friendly, pragmatic, etc.)   |
+| `moses config diff-limit`     | Changes the maximum allowed line changes in a single diff    |
+| `moses config reset`          | Wipes all local configurations and starts fresh              |
+
+To see more details and options for any command, run:
 
 ```bash
 moses help
+```
+
+or for a specific command:
+
+```bash
+moses validate --help
 ```
 
 Flow:
 
 1. Parses MR URL
 2. Fetches MR data + diffs + commits from GitLab API
-3. Loads context markdown files from `~/.moses-cli/context/`
-4. Concatenates context files + optional prompt + MR diff and sends to configured AI tool
-5. Displays response in terminal
+3. **Smart Repository Lookup**: Detects if your current directory matches the project or offers to **clone/download** the repository for deeper context
+4. **Context Gathering**:
+   - Loads global rules from `~/.moses-cli/context/`
+   - Scans the repository for project-specific instructions (e.g., `copilot-instructions.md`, `README.md`)
+5. Concatenates all context + optional prompt + MR diff and sends to configured AI tool
+6. Displays response in real-time
 
 ### Why moses?
 
 Like Moses guiding his people to the promised land, moses validates every merge request, ensuring your most precious asset, your code, reaches production safely.
 
 - **Fast analysis**: Fetches diffs directly from GitLab API
-- **Multi-AI**: Focus on tested support for GitHub Copilot CLI and Gemini CLI
-- **Secure**: Tokens stored with 600 permissions, never exposed
+- **Multi-AI**: Focus on support for GitHub Copilot CLI and Gemini CLI
+- **Smart Context**: Combines global rules with your project's internal documentation
 - **Comprehensive**: Generates structured markdown with stats, commits, and diffs
 
 ## Features
@@ -70,10 +91,10 @@ Like Moses guiding his people to the promised land, moses validates every merge 
 - Support for multiple GitLab instances (gitlab.com + self-hosted)
 - Automatic validation of AI tool installation
 - Real-time streaming of AI analysis
-- Configurable feedback style (amigável, pragmático, ofensivo)
+- Configurable feedback style (friendly, pragmatic, offensive)
 - Configurable diff changes limit with safe interruption
-- **Internal Repository Context**: Automatically scans for `copilot-instructions.md`, `.github/copilot-instructions.md`, `claude.md`, etc., in your project to give the AI project-specific rules.
-- **Auto-Download Context**: Option to clone the MR repository if you are not currently in the project folder.
+- **Internal repository context**: Automatically scans for `copilot-instructions.md`, `.github/copilot-instructions.md`, `claude.md`, `.clauderc`, and `README.md` to feed the AI with project-specific rules.
+- **Auto-repository cloning**: Detects if you're outside the project and offers to download it to extract internal context.
 - Optional extra prompt context in `moses validate`
 - Elegant error handling with contextual messages
 
