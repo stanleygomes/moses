@@ -1,18 +1,20 @@
 import { MESSAGES } from '../../constants.js';
-import { checkAndFixConfigPermissions, readConfig } from '../../utils/config-store.js';
-import * as display from '../../utils/display.js';
+import { ConfigStore } from '../../utils/config-store.js';
+import { Display } from '../../utils/display.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';
 
-export async function loadConfigOrExit(): Promise<MosesConfig | null> {
-  try {
-    const config = await readConfig();
-    const permissionStatus = await checkAndFixConfigPermissions();
-    if (permissionStatus.fixed) {
-      display.warn('Config permissions were incorrect and have been fixed to 600.');
+export class UpdateConfigLoader {
+  static async loadConfigOrExit(): Promise<MosesConfig | null> {
+    try {
+      const config = await ConfigStore.readConfig();
+      const permissionStatus = await ConfigStore.checkAndFixConfigPermissions();
+      if (permissionStatus.fixed) {
+        Display.warn('Config permissions were incorrect and have been fixed to 600.');
+      }
+      return config;
+    } catch {
+      Display.error(MESSAGES.noConfig);
+      return null;
     }
-    return config;
-  } catch {
-    display.error(MESSAGES.noConfig);
-    return null;
   }
 }

@@ -1,2 +1,2 @@
-export { runSetFeedbackStyle } from './set-feedback-style.js';
-export { runSetDiffLimit } from './set-diff-limit.js';
+export { SetFeedbackStyleCommand } from './set-feedback-style.js';
+export { SetDiffLimitCommand } from './set-diff-limit.js';

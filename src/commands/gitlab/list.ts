@@ -1,37 +1,39 @@
-import { readConfig } from '../../utils/config-store.js';
-import * as display from '../../utils/display.js';
+import { ConfigStore } from '../../utils/config-store.js';
+import { Display } from '../../utils/display.js';
 
-export async function runListGitlabs(): Promise<void> {
-  display.banner();
+export class ListGitlabsCommand {
+  static async run(): Promise<void> {
+    Display.banner();
 
-  try {
-    const config = await readConfig();
+    try {
+      const config = await ConfigStore.readConfig();
 
-    if (!config || config.gitlabs.length === 0) {
-      display.warn('No GitLab instances configured.');
-      display.info('Run "moses init" to add a new instance.');
-      return;
+      if (!config || config.gitlabs.length === 0) {
+        Display.warn('No GitLab instances configured.');
+        Display.info('Run "moses init" to add a new instance.');
+        return;
+      }
+
+      Display.section('📋 CONFIGURED GITLAB INSTANCES');
+
+      config.gitlabs.forEach((gitlab) => {
+        const isDefault = gitlab.name === config.defaultGitlab;
+        const indicator = isDefault ? '⭐️ ' : '🔹 ';
+        const label = isDefault ? ` (DEFAULT)` : '';
+
+        Display.info(`${indicator}${gitlab.name}${label}`);
+        Display.info(`   URL: ${gitlab.url}`);
+        Display.info(
+          `   Token: ${gitlab.token.replace(/./g, '*').substring(0, 10)}... (last 4 chars: ${gitlab.token.slice(-4)})`,
+        );
+        console.log('');
+      });
+
+      Display.info(`TIP: You can use "moses gitlab default" to change the default instance.`);
+    } catch (error) {
+      Display.error('Could not load Moses configuration.');
+      Display.info('Run "moses init" if you haven\'t yet.');
+      console.log(error);
     }
-
-    display.section('📋 CONFIGURED GITLAB INSTANCES');
-
-    config.gitlabs.forEach((gitlab) => {
-      const isDefault = gitlab.name === config.defaultGitlab;
-      const indicator = isDefault ? '⭐️ ' : '🔹 ';
-      const label = isDefault ? ` (DEFAULT)` : '';
-
-      display.info(`${indicator}${gitlab.name}${label}`);
-      display.info(`   URL: ${gitlab.url}`);
-      display.info(
-        `   Token: ${gitlab.token.replace(/./g, '*').substring(0, 10)}... (last 4 chars: ${gitlab.token.slice(-4)})`,
-      );
-      console.log('');
-    });
-
-    display.info(`TIP: You can use "moses gitlab default" to change the default instance.`);
-  } catch (error) {
-    display.error('Could not load Moses configuration.');
-    display.info('Run "moses init" if you haven\'t yet.');
-    console.log(error);
   }
 }

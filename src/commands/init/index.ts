@@ -1,36 +1,42 @@
 import { confirm } from '@inquirer/prompts';
 import { MESSAGES } from '../../constants.js';
-import * as display from '../../utils/display.js';
-import { loadExistingConfig } from './config-loader.js';
-import { promptGitlabSetup } from './gitlab-wizard.js';
-import { promptAiSetup } from './ai-wizard.js';
-import { buildAndSaveConfig } from './config-builder.js';
+import { Display } from '../../utils/display.js';
+import { InitConfigLoader } from './config-loader.js';
+import { GitlabWizard } from './gitlab-wizard.js';
+import { AiWizard } from './ai-wizard.js';
+import { InitConfigBuilder } from './config-builder.js';
 
-export async function runInit(): Promise<void> {
-  display.banner();
-  display.info(MESSAGES.welcome);
+export class InitCommand {
+  static async run(): Promise<void> {
+    Display.banner();
+    Display.info(MESSAGES.welcome);
 
-  const existingConfig = await loadExistingConfig();
-  if (existingConfig) {
-    const overwrite = await confirm({
-      message: 'Existing configuration found. Do you want to overwrite/add a new instance?',
-      default: true,
-    });
-    if (!overwrite) {
-      display.info('No changes applied.');
-      return;
+    const existingConfig = await InitConfigLoader.loadExistingConfig();
+    if (existingConfig) {
+      const overwrite = await confirm({
+        message: 'Existing configuration found. Do you want to overwrite/add a new instance?',
+        default: true,
+      });
+      if (!overwrite) {
+        Display.info('No changes applied.');
+        return;
+      }
     }
+
+    const gitlabData = await GitlabWizard.promptGitlabSetup(existingConfig);
+    const aiData = await AiWizard.promptAiSetup(existingConfig);
+
+    const { configPath, contextInfo } = await InitConfigBuilder.buildAndSaveConfig(
+      gitlabData,
+      aiData,
+      existingConfig,
+    );
+
+    Display.success(MESSAGES.done);
+    Display.info(`📁 Config saved at ${configPath} (mode 600)`);
+    Display.info(`📁 Context files saved at ${contextInfo.contextDir}:`);
+    contextInfo.files.forEach((file) => Display.info(`   - ${file}`));
+
+    Display.info(`\n${MESSAGES.next}`);
   }
-
-  const gitlabData = await promptGitlabSetup(existingConfig);
-  const aiData = await promptAiSetup(existingConfig);
-
-  const { configPath, contextInfo } = await buildAndSaveConfig(gitlabData, aiData, existingConfig);
-
-  display.success(MESSAGES.done);
-  display.info(`📁 Config saved at ${configPath} (mode 600)`);
-  display.info(`📁 Context files saved at ${contextInfo.contextDir}:`);
-  contextInfo.files.forEach((file) => display.info(`   - ${file}`));
-
-  display.info(`\n${MESSAGES.next}`);
 }

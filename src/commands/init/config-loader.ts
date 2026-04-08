@@ -1,20 +1,20 @@
-import {
-  checkAndFixConfigPermissions,
-  getConfigPath,
-  readConfig,
-} from '../../utils/config-store.js';
-import * as display from '../../utils/display.js';
+import { ConfigStore } from '../../utils/config-store.js';
+import { Display } from '../../utils/display.js';
 import type { MosesConfig } from '../../types/MosesConfig.js';
 
-export async function loadExistingConfig(): Promise<MosesConfig | null> {
-  try {
-    const config = await readConfig();
-    const permissionStatus = await checkAndFixConfigPermissions();
-    if (permissionStatus.fixed) {
-      display.warn(`Permissions were automatically fixed to 600 at ${getConfigPath()}`);
+export class InitConfigLoader {
+  static async loadExistingConfig(): Promise<MosesConfig | null> {
+    try {
+      const config = await ConfigStore.readConfig();
+      const permissionStatus = await ConfigStore.checkAndFixConfigPermissions();
+      if (permissionStatus.fixed) {
+        Display.warn(
+          `Permissions were automatically fixed to 600 at ${ConfigStore.getConfigPath()}`,
+        );
+      }
+      return config;
+    } catch {
+      return null;
     }
-    return config;
-  } catch {
-    return null;
   }
 }
