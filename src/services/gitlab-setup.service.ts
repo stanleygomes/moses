@@ -42,7 +42,7 @@ export class GitlabSetupWizard {
       const status = axios.isAxiosError(error) ? error.response?.status : undefined;
       const message = status ? `Failed (Status ${status})` : 'Invalid or expired token.';
       tokenSpinner.fail(message);
-      const settingsBase = gitlabUrl.replace(/\/$/, '');
+      const settingsBase = UrlParser.normalizeBaseUrl(gitlabUrl);
       Display.link(`   ${settingsBase}/-/user_settings/personal_access_tokens`);
       throw error;
     }
@@ -85,7 +85,7 @@ export class GitlabSetupWizard {
   }
 
   private static displayTokenHelp(url: string): void {
-    const settingsBase = url.replace(/\/$/, '');
+    const settingsBase = UrlParser.normalizeBaseUrl(url);
     Display.info('💡 Create a new Personal Access Token with "api" scope here:');
     Display.link(`${settingsBase}/-/user_settings/personal_access_tokens`);
   }

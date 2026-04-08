@@ -1,19 +1,15 @@
 import fs from 'node:fs/promises';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DEFAULT_CONTEXT_DIR } from '../constants/paths.constant.js';
+import { FsUtil } from '../utils/fs.util.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROMPTS_DIR = path.resolve(__dirname, '../prompts');
 
 export class ContextManager {
-  private static resolveHome(value: string): string {
-    return value.replace(/^~(?=\/|$)/, os.homedir());
-  }
-
   static getContextDir(): string {
-    return ContextManager.resolveHome(DEFAULT_CONTEXT_DIR);
+    return FsUtil.resolveHome(DEFAULT_CONTEXT_DIR);
   }
 
   static async ensureDefaultContextFiles(): Promise<{

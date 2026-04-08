@@ -1,16 +1,16 @@
 import { execSync } from 'node:child_process';
-import { AI_TOOLS } from '../constants/ai.constant.js';
+import { AiToolUtil } from './ai-tool.util.js';
 import type { AiToolKey } from '../types/ai-tool-key.type.js';
 import type { ToolValidationResult } from '../types/tool-validation-result.type.js';
 
 export class ToolValidator {
   static getInstallUrl(toolKey: AiToolKey): string {
-    const tool = AI_TOOLS.find((item) => item.key === toolKey);
+    const tool = AiToolUtil.findByKey(toolKey);
     return tool?.docs ?? '';
   }
 
   static validateToolInstallation(toolKey: AiToolKey): ToolValidationResult {
-    const tool = AI_TOOLS.find((item) => item.key === toolKey);
+    const tool = AiToolUtil.findByKey(toolKey);
     if (!tool) {
       return { installed: false, installUrl: '' };
     }

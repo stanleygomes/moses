@@ -35,4 +35,8 @@ export class UrlParser {
       return false;
     }
   }
+
+  static normalizeBaseUrl(url: string): string {
+    return url.replace(/\/$/, '');
+  }
 }

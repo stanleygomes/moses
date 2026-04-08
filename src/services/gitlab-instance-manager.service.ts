@@ -1,6 +1,8 @@
-import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
+import { ConfigUtil } from '../utils/config.util.js';
+import { ErrorUtil } from '../utils/error.util.js';
+import { TokenUtil } from '../utils/token.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 import type { GitlabInstance } from '../types/gitlab-instance.type.js';
 
@@ -26,9 +28,7 @@ export class GitlabInstanceManager {
 
     Display.info(`${indicator}${gitlab.name}${label}`);
     Display.info(`   URL: ${gitlab.url}`);
-    Display.info(
-      `   Token: ${gitlab.token.replace(/./g, '*').substring(0, 10)}... (last 4 chars: ${gitlab.token.slice(-4)})`,
-    );
+    Display.info(`   Token: ${TokenUtil.mask(gitlab.token)}`);
 
     console.log('');
   }
@@ -50,25 +50,23 @@ export class GitlabInstanceManager {
   }
 
   static async updateConfig(config: MosesConfig, nextDefault: string): Promise<void> {
-    const nextConfig: MosesConfig = {
-      ...config,
+    await ConfigUtil.updateAndSave(config, (current) => ({
+      ...current,
       defaultGitlab: nextDefault,
-      gitlabs: GitlabInstanceManager.markDefaultGitlab(config.gitlabs, nextDefault),
-    };
-
-    await ConfigStore.set(nextConfig);
+      gitlabs: GitlabInstanceManager.markDefaultGitlab(current.gitlabs, nextDefault),
+    }));
     Display.success(`Default GitLab switched to: ${nextDefault}`);
   }
 
   static handleLoadError(error: unknown): void {
     Display.error('Could not load Moses configuration.');
     Display.info('Run "moses init" if you haven\'t yet.');
-    console.log(error);
+    Display.error(ErrorUtil.getMessage(error));
   }
 
   static handleSwitchError(error: unknown): void {
     Display.error('Could not switch GitLab instance.');
-    console.log(error);
+    Display.error(ErrorUtil.getMessage(error));
   }
 
   private static buildInstanceChoices(config: MosesConfig): { name: string; value: string }[] {

@@ -1,7 +1,7 @@
 import { DEFAULT_MAX_DIFF_CHANGES } from '../constants/ai.constant.js';
-import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
+import { ConfigUtil } from '../utils/config.util.js';
 import { diffLimitSchema } from '../validators/diff-limit.validator.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
@@ -18,15 +18,7 @@ export class DiffLimitManager {
   }
 
   static async updateAndSave(config: MosesConfig, limit: number): Promise<void> {
-    const nextConfig: MosesConfig = {
-      ...config,
-      ai: {
-        ...config.ai,
-        maxDiffChanges: limit,
-      },
-    };
-
-    await ConfigStore.set(nextConfig);
+    await ConfigUtil.updateAiAndSave(config, { maxDiffChanges: limit });
     Display.success(`Diff limit updated successfully to ${limit}.`);
   }
 

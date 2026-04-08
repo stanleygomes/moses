@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { GitlabApiService } from './gitlab-api.service.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
+import { ErrorUtil } from '../utils/error.util.js';
 import { UrlParser } from '../utils/url.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
@@ -10,7 +11,7 @@ export class GitlabDataProvider {
   static async fetchMrData(url: string, config: MosesConfig) {
     const parsedUrl = GitlabDataProvider.parseMergeRequestUrl(url);
     if (!parsedUrl) return null;
-    const gitlabConfig = GitlabDataProvider.findGitlabConfig(config, parsedUrl.host);
+    const gitlabConfig = ConfigStore.findGitlabInstance(config, parsedUrl.host);
     if (!gitlabConfig) {
       Display.error(`No GitLab instance configured for host: ${parsedUrl.host}`);
       return null;
@@ -28,13 +29,9 @@ export class GitlabDataProvider {
     try {
       return UrlParser.parseMergeRequestUrl(url);
     } catch (error: unknown) {
-      Display.error(error instanceof Error ? error.message : 'Invalid Merge Request URL.');
+      Display.error(ErrorUtil.getMessage(error, 'Invalid Merge Request URL.'));
       return null;
     }
-  }
-
-  private static findGitlabConfig(config: MosesConfig, host: string) {
-    return ConfigStore.findGitlabInstance(config, host);
   }
 
   private static async fetchAndDisplayMergeRequest(
@@ -72,6 +69,6 @@ export class GitlabDataProvider {
       Display.error('MR not found (404). Check URL and access (VPN, permissions).');
       return;
     }
-    Display.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    Display.error(`Error: ${ErrorUtil.getMessage(error)}`);
   }
 }

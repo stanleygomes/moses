@@ -3,6 +3,7 @@ import { UrlParser } from '../utils/url.util.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
+import { ErrorUtil } from '../utils/error.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 
 export class GitRepoResolver {
@@ -26,7 +27,7 @@ export class GitRepoResolver {
     config: MosesConfig,
   ): Promise<string | null> {
     const parsedUrl = UrlParser.parseMergeRequestUrl(url);
-    const gitlabConfig = GitRepoResolver.findGitlabConfig(config, parsedUrl.host);
+    const gitlabConfig = ConfigStore.findGitlabInstance(config, parsedUrl.host);
 
     if (!gitlabConfig) {
       Display.error(`No GitLab instance configured for host: ${parsedUrl.host}`);
@@ -53,10 +54,6 @@ export class GitRepoResolver {
     });
   }
 
-  private static findGitlabConfig(config: MosesConfig, host: string) {
-    return ConfigStore.findGitlabInstance(config, host);
-  }
-
   private static async cloneRepositoryWithFeedback(
     targetRepoUrl: string,
     token: string,
@@ -68,7 +65,7 @@ export class GitRepoResolver {
       return repoPath;
     } catch (error) {
       spinner.fail('Failed to clone repository.');
-      Display.error(error instanceof Error ? error.message : 'Unknown error during clone.');
+      Display.error(ErrorUtil.getMessage(error, 'Unknown error during clone.'));
       return null;
     }
   }

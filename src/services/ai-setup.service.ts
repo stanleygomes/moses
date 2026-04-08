@@ -1,8 +1,9 @@
 import { AI_TOOLS } from '../constants/ai.constant.js';
-import { FEEDBACK_STYLES } from '../constants/feedback.constant.js';
 import { Display } from '../utils/display.util.js';
 import { ToolValidator } from '../utils/tool-validator.util.js';
 import { Prompt } from '../utils/prompt.util.js';
+import { AiToolUtil } from '../utils/ai-tool.util.js';
+import { FeedbackStyleUtil } from '../utils/feedback-style.util.js';
 import { diffLimitSchema } from '../validators/diff-limit.validator.js';
 import type { AiToolKey } from '../types/ai-tool-key.type.js';
 import type { FeedbackStyle } from '../types/feedback-style.type.js';
@@ -84,11 +85,7 @@ export class AiSetupWizard {
   }
 
   private static findAiToolByKey(toolKey: AiToolKey) {
-    const toolInfo = AI_TOOLS.find((tool) => tool.key === toolKey);
-    if (!toolInfo) {
-      throw new Error(`Unsupported AI tool: ${String(toolKey)}`);
-    }
-    return toolInfo;
+    return AiToolUtil.getByKeyOrThrow(toolKey);
   }
 
   private static validateAiToolInstallation(toolInfo: { key: AiToolKey; name: string }) {
@@ -118,14 +115,7 @@ export class AiSetupWizard {
   static async chooseFeedbackStyle(
     existingStyle: FeedbackStyle | undefined,
   ): Promise<FeedbackStyle> {
-    const defaultStyle =
-      FEEDBACK_STYLES.find((item) => item.key === existingStyle)?.key ?? FEEDBACK_STYLES[1].key;
-
-    return Prompt.select<FeedbackStyle>({
-      message: 'Choose MR feedback style:',
-      choices: FEEDBACK_STYLES.map((item) => ({ name: item.label, value: item.key })),
-      default: defaultStyle as FeedbackStyle,
-    });
+    return FeedbackStyleUtil.promptSelection(existingStyle);
   }
 
   static async chooseMaxDiffChanges(existingLimit: number | undefined): Promise<number> {

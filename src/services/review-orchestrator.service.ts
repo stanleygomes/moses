@@ -4,6 +4,7 @@ import { ContextManager } from './context-manager.service.js';
 import { RepoScanner } from './repo-scanner.service.js';
 import { MrMarkdownFormatter } from './mr-markdown-formatter.service.js';
 import { Display } from '../utils/display.util.js';
+import { ErrorUtil } from '../utils/error.util.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
 import type { ValidateOptions } from '../types/validate-options.type.js';
 import type { MergeRequestBundle } from '../types/merge-request-bundle.type.js';
@@ -28,7 +29,7 @@ export class ReviewOrchestrator {
       await ReviewOrchestrator.executeAiReview(config, markdown, contextPrompt);
     } catch (error: unknown) {
       markdownSpinner.fail('Failed to generate markdown or run AI review.');
-      Display.error(error instanceof Error ? error.message : 'Unknown error during AI review.');
+      Display.error(ErrorUtil.getMessage(error, 'Unknown error during AI review.'));
     }
   }
 

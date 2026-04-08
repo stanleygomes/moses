@@ -1,7 +1,8 @@
 import { spawn } from 'node:child_process';
-import { AI_TOOLS } from '../constants/ai.constant.js';
 import { FEEDBACK_STYLE_GUIDANCE } from '../constants/feedback.constant.js';
+import { AiToolUtil } from '../utils/ai-tool.util.js';
 import type { RunAiReviewHandlers } from '../types/run-ai-review-handlers.type.js';
+import type { AiToolKey } from '../types/ai-tool-key.type.js';
 
 export class AiReviewService {
   private static buildPrompt(
@@ -20,14 +21,11 @@ ${markdownContent}`;
   }
 
   static runAiReview(
-    toolKey: string,
+    toolKey: AiToolKey,
     markdownContent: string,
     handlers: RunAiReviewHandlers = {},
   ): void {
-    const tool = AI_TOOLS.find((item) => item.key === toolKey);
-    if (!tool) {
-      throw new Error(`Invalid AI tool: ${toolKey}`);
-    }
+    const tool = AiToolUtil.getByKeyOrThrow(toolKey);
 
     const prompt = AiReviewService.buildPrompt(markdownContent, handlers.options);
     const args = [...tool.args, prompt];
