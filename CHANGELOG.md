@@ -1,5 +1,56 @@
 # Changelog
 
+## [1.2.0](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.1.0...moses-cli-v1.2.0) (2026-04-08)
+
+
+### Features
+
+* add reset command to clear local configuration and update build output paths ([49b5336](https://github.com/stanleygomes/moses-cli/commit/49b53363227c493d06d65f383c744ae46009588d))
+* implement automatic repository context scanning and cloning for improved AI review analysis ([a50a166](https://github.com/stanleygomes/moses-cli/commit/a50a166587339ba6628cad6c6444a08359d0c6a9))
+* implement automatic update checking and manual update command for CLI ([6369138](https://github.com/stanleygomes/moses-cli/commit/63691389cafe468d0b388750ce886b48c418f447))
+
+
+### Bug Fixes
+
+* corrigir permissoes release ci ([d034701](https://github.com/stanleygomes/moses-cli/commit/d034701efe787606b0a06e9c6b08531962ceaefd))
+* suppress ENOENT error logs and provide helpful initialization prompts in service error handlers ([83e6da2](https://github.com/stanleygomes/moses-cli/commit/83e6da2cd203d6182f2b2d52322c95136a254b79))
+
+
+### Miscellaneous Chores
+
+* add prettier ignore ([1f73b8f](https://github.com/stanleygomes/moses-cli/commit/1f73b8f030e34f860d7ff4de04807626bf54f2ba))
+* services to extract shared logic into reusable utils ([#9](https://github.com/stanleygomes/moses-cli/issues/9)) ([452c79d](https://github.com/stanleygomes/moses-cli/commit/452c79d12667054ba21b450a2b3a1802f3177071))
+* tentando gerar release ([9ec24ea](https://github.com/stanleygomes/moses-cli/commit/9ec24ea21742857e8ec243b688b8d8d0259088b1))
+* teste ci ([edc0f16](https://github.com/stanleygomes/moses-cli/commit/edc0f164370c88fedd065c854ba197e210330913))
+* teste ci ([ea0d5e9](https://github.com/stanleygomes/moses-cli/commit/ea0d5e976e57b14d0bd3f0d48ae2b27c13089734))
+* update description ([cc8fa5a](https://github.com/stanleygomes/moses-cli/commit/cc8fa5aed9e29e5b35b120e69d98978b1df30393))
+
+
+### Code Refactoring
+
+* abstract prompt logic into a reusable utility with Zod validation and remove redundant config loader module ([aa6fbca](https://github.com/stanleygomes/moses-cli/commit/aa6fbcabd1896ff86bcf7bdafeaf24691d8e212b))
+* consolidate configuration management into ConfigStore and standardize prompt usage with a new Confirm utility ([2549ed7](https://github.com/stanleygomes/moses-cli/commit/2549ed75eb4e4a7b9eeeaee0727631e723dc423d))
+* enforce class-based architecture across commands and services ([95a8947](https://github.com/stanleygomes/moses-cli/commit/95a894794f973fe4217a57b64cf87c874b8a2276))
+* enhance CLI output by migrating MR and context summaries to formatted box displays ([86c575d](https://github.com/stanleygomes/moses-cli/commit/86c575d00b0d1ed1850b7450032cfe326678b782))
+* enhance repository context tracking, reduce default diff limit, and improve error handling in service managers ([1543dc8](https://github.com/stanleygomes/moses-cli/commit/1543dc823d1eb47d4622353f444aeedf45929afc))
+* flatten module directory structure by moving files directly into the modules directory ([c9e2458](https://github.com/stanleygomes/moses-cli/commit/c9e2458654c46c27a6e1a9d6aa33bf44b518efc7))
+* migrate module handlers to centralized services directory ([4972c40](https://github.com/stanleygomes/moses-cli/commit/4972c40d4a03a8b063dacc91e849b0ed3ef35d42))
+* modularize CLI command structure and standardize type naming conventions ([63eeeab](https://github.com/stanleygomes/moses-cli/commit/63eeeab3f16a4ff0031305b31ee01a9b0ef38c35))
+* modularize constants by splitting src/constants.ts into a dedicated directory ([5a570fe](https://github.com/stanleygomes/moses-cli/commit/5a570fe375dd1130b78cb078b790be1d2fa5b5a3))
+* modularize core logic by extracting helper handlers and cleaning up redundant utilities ([134b5a7](https://github.com/stanleygomes/moses-cli/commit/134b5a7d9b88d15faaa9681eb89e4dafa6726069))
+* modularize filesystem and JSON operations, and introduce a centralized ConfigStore for improved state management ([5a44f25](https://github.com/stanleygomes/moses-cli/commit/5a44f2572f7daeccbde5f45c670420b8a72f7da9))
+* move FEEDBACK_STYLE_GUIDANCE to constants file for better maintainability ([82d2dce](https://github.com/stanleygomes/moses-cli/commit/82d2dcee21fd371f4120d89cb928a53ef26b700a))
+* rename service handlers to managers and consolidate setup wizard logic ([3098cfa](https://github.com/stanleygomes/moses-cli/commit/3098cfa6f8149f6b58a6a8debe27559e0d6f7efa))
+* src/services into single-responsibility methods and split orchestration flows ([4b1dce4](https://github.com/stanleygomes/moses-cli/commit/4b1dce44106d80b1fd216501c6e52bc2c780ffde))
+
+
+### Documentation
+
+* ajuste readme ([86595b4](https://github.com/stanleygomes/moses-cli/commit/86595b4f993b087352a923f391a06e527052a14f))
+* ajustes no readme ([be1d35e](https://github.com/stanleygomes/moses-cli/commit/be1d35e3b66428337d5d0a2a2343586fa890a27f))
+* corrigindo commandos readme ([bf803ee](https://github.com/stanleygomes/moses-cli/commit/bf803ee28d6d2739308f7c23948d5e5ad54cf5fd))
+* update README with command reference, improved flow documentation, and feature clarifications ([b4bcfdc](https://github.com/stanleygomes/moses-cli/commit/b4bcfdcddc3f0ff9c38ce4cb0c1c9ad2fdcdb848))
+
 ## [1.1.0](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.0.0...moses-cli-v1.1.0) (2026-04-03)
 
 
