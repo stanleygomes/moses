@@ -97,6 +97,12 @@ export class GitOperationsService {
   }
 
   private static maskToken(text: string, token: string): string {
-    return token ? text.replaceAll(token, '***') : text;
+    if (!token) return text;
+    const basicAuth = Buffer.from(`oauth2:${token}`).toString('base64');
+    const encodedToken = encodeURIComponent(token);
+    return [token, encodedToken, basicAuth].reduce(
+      (maskedText, secret) => (secret ? maskedText.replaceAll(secret, '***') : maskedText),
+      text,
+    );
   }
 }

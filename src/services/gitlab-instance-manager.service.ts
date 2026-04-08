@@ -30,7 +30,7 @@ export class GitlabInstanceManager {
       `   Token: ${gitlab.token.replace(/./g, '*').substring(0, 10)}... (last 4 chars: ${gitlab.token.slice(-4)})`,
     );
 
-    GitlabInstanceManager.printSpacing();
+    console.log('');
   }
 
   static async promptAndSwitch(config: MosesConfig): Promise<void> {
@@ -86,9 +86,5 @@ export class GitlabInstanceManager {
       ...gitlab,
       default: gitlab.name === nextDefault,
     }));
-  }
-
-  private static printSpacing(): void {
-    console.log('');
   }
 }
