@@ -72,10 +72,9 @@ export class ContextManager {
   }
 
   private static buildContextPrompt(segments: string[], extraPrompt: string): string {
-    const promptSegments = [...segments];
     if (extraPrompt.trim()) {
-      promptSegments.push(`# Additional user context\n${extraPrompt.trim()}`);
+      segments.push(`# Additional user context\n${extraPrompt.trim()}`);
     }
-    return `${promptSegments.join('\n\n')}\n`;
+    return `${segments.join('\n\n')}\n`;
   }
 }
