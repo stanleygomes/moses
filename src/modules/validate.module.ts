@@ -9,7 +9,6 @@ import type { ValidateOptions } from '../types/validate-options.type.js';
 export class ValidateModule {
   static async run(url: string, options: ValidateOptions = {}): Promise<void> {
     Display.banner();
-    Display.info(`🔗 Analyzing: ${url}`);
 
     const config = await ConfigValidator.getConfig();
     if (!config) return;

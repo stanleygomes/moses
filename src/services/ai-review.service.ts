@@ -1,5 +1,8 @@
 import { spawn } from 'node:child_process';
-import { FEEDBACK_STYLE_GUIDANCE } from '../constants/feedback.constant.js';
+import {
+  FEEDBACK_STYLE_GUIDANCE,
+  TERMINAL_OUTPUT_GUIDELINE,
+} from '../constants/feedback.constant.js';
 import { AiToolUtil } from '../utils/ai-tool.util.js';
 import type { RunAiReviewHandlers } from '../types/run-ai-review-handlers.type.js';
 import type { AiToolKey } from '../types/ai-tool-key.type.js';
@@ -13,7 +16,8 @@ export class AiReviewService {
     const toneInstruction =
       FEEDBACK_STYLE_GUIDANCE[feedbackStyle] ?? FEEDBACK_STYLE_GUIDANCE.pragmatic;
     const context = options.contextPrompt?.trim();
-    return `${context ? `${context}\n\n` : ''}${toneInstruction}
+
+    return `${context ? `${context}\n\n` : ''}${TERMINAL_OUTPUT_GUIDELINE}\n\n${toneInstruction}
 
 Merge Request Diff:
 

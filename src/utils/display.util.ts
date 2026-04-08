@@ -26,9 +26,29 @@ export class Display {
   }
 
   static section(title: string): void {
-    console.log(chalk.bold('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'));
-    console.log(chalk.bold(title));
-    console.log(chalk.bold('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'));
+    console.log(chalk.bold.cyan('\n' + '━'.repeat(process.stdout.columns || 60)));
+    console.log(chalk.bold.white(`  ${title}`));
+    console.log(chalk.bold.cyan('━'.repeat(process.stdout.columns || 60) + '\n'));
+  }
+
+  static box(content: string, title?: string, color: string = 'cyan'): void {
+    console.log(
+      boxen(content, {
+        padding: 1,
+        margin: { top: 1, bottom: 0 },
+        borderStyle: 'round',
+        borderColor: color,
+        title: title ? `${title}` : undefined,
+        titleAlignment: 'left',
+      }),
+    );
+  }
+
+  static line(color: string = 'dim'): void {
+    const char = '─';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const chalkFn = (chalk as any)[color] ?? chalk.dim;
+    console.log(chalkFn(char.repeat(process.stdout.columns || 60)));
   }
 
   static spinner(text: string): Ora {
@@ -36,19 +56,23 @@ export class Display {
   }
 
   static success(text: string): void {
-    console.log(chalk.green(`✅ ${text}`));
+    console.log(chalk.green(`\n${text}`));
   }
 
   static error(text: string): void {
-    console.error(chalk.red(`❌ ${text}`));
+    console.error(chalk.red(`\n${text}`));
   }
 
   static info(text: string): void {
     console.log(chalk.blue(text));
   }
 
+  static dim(text: string): void {
+    console.log(chalk.dim(text));
+  }
+
   static warn(text: string): void {
-    console.log(chalk.yellow(`⚠️ ${text}`));
+    console.log(chalk.yellow(text));
   }
 
   static link(text: string): void {

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import dayjs from 'dayjs';
 import { GitlabApiService } from './gitlab-api.service.js';
 import { ConfigStore } from '../store/config.store.js';
 import { Display } from '../utils/display.util.js';
@@ -43,24 +42,12 @@ export class GitlabDataProvider {
     const spinner = Display.spinner('Fetching MR data...');
     try {
       const data = await GitlabApiService.getMergeRequestData(baseUrl, token, projectId, mrIid);
-      spinner.succeed(`MR #${data.mr.iid} — "${data.mr.title}" loaded`);
-      GitlabDataProvider.displayMergeRequestSummary(data);
+      spinner.stop();
       return data;
     } catch (error: unknown) {
       GitlabDataProvider.handleFetchError(error, spinner);
       return null;
     }
-  }
-
-  private static displayMergeRequestSummary(
-    data: Awaited<ReturnType<typeof GitlabApiService.getMergeRequestData>>,
-  ): void {
-    Display.info(`👤 Author:   ${data.mr.author?.name ?? data.mr.author?.username ?? 'unknown'}`);
-    Display.info(`🌿 Branch:   ${data.mr.source_branch} → ${data.mr.target_branch}`);
-    Display.info(`📅 Date:     ${dayjs(data.mr.created_at).format('YYYY-MM-DD')}`);
-    Display.info(
-      `📊 Stats:    ${data.diffs.length} files | changes_count: ${data.mr.changes_count ?? '?'}`,
-    );
   }
 
   private static handleFetchError(error: unknown, spinner: { fail: (text: string) => void }): void {

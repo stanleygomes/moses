@@ -42,12 +42,12 @@ export class GitRepoResolver {
       return null;
     }
 
-    Display.success('✅ Repository detected in current directory. Using local context.');
+    Display.success('Repository detected in current directory. Using local context.');
     return process.cwd();
   }
 
   private static async promptForRepositoryDownload(): Promise<boolean> {
-    Display.info('📂 Current directory does not match the MR repository.');
+    Display.info('Current directory does not match the MR repository.');
     return Prompt.confirm({
       message: 'Do you want to download the repository locally to provide more context to the AI?',
       default: true,

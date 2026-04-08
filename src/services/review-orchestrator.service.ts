@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+import chalk from 'chalk';
 import { AiReviewService } from './ai-review.service.js';
 import { ContextManager } from './context-manager.service.js';
 import { RepoScanner } from './repo-scanner.service.js';
@@ -25,12 +27,13 @@ export class ReviewOrchestrator {
       } = await ReviewOrchestrator.buildContextPrompt(options.prompt ?? '', repoPath);
       const markdown = ReviewOrchestrator.buildReviewMarkdown(url, data);
 
-      const localInfo = localFiles.length > 0 ? `${localFiles.length} local` : 'no local';
-      const repoInfo = repoFiles.length > 0 ? `${repoFiles.join(', ')}` : 'no repository';
+      markdownSpinner.succeed('Context and diff prepared');
 
-      markdownSpinner.succeed(
-        `Context and diff prepared (files: ${localInfo}, repository: ${repoInfo})`,
-      );
+      // 1. Organize MR Details
+      ReviewOrchestrator.displayMrBrief(data, url);
+
+      // 2. Organize Context Details
+      ReviewOrchestrator.displayContextBrief(localFiles, repoFiles, options.prompt);
 
       if (repoPath && repoFiles.length === 0) {
         Display.warn(
@@ -38,11 +41,56 @@ export class ReviewOrchestrator {
         );
       }
 
+      // 3. AI Analysis
       await ReviewOrchestrator.executeAiReview(config, markdown, contextPrompt);
     } catch (error: unknown) {
       markdownSpinner.fail('Failed to generate markdown or run AI review.');
       Display.error(ErrorUtil.getMessage(error, 'Unknown error during AI review.'));
     }
+  }
+
+  private static displayMrBrief(data: MergeRequestBundle, url: string): void {
+    const { mr, diffs } = data;
+    const details = [
+      `${chalk.bold('Title:')}  ${mr.title}`,
+      `${chalk.bold('Author:')} ${mr.author?.name || 'Unknown'} (@${mr.author?.username || 'unknown'})`,
+      `${chalk.bold('Branch:')} ${mr.source_branch} → ${mr.target_branch}`,
+      `${chalk.bold('Date:')}   ${dayjs(mr.created_at).format('YYYY-MM-DD')}`,
+      `${chalk.bold('Stats:')}  ${diffs.length} files | changes: ${mr.changes_count ?? '?'}`,
+      `${chalk.bold('URL:')}    ${chalk.dim(url)}`,
+    ].join('\n');
+
+    Display.box(details, 'Merge Request Details', 'magenta');
+  }
+
+  private static displayContextBrief(
+    localFiles: string[],
+    repoFiles: string[],
+    extraPrompt?: string,
+  ): void {
+    const sections = [];
+
+    if (localFiles.length > 0) {
+      sections.push(
+        `${chalk.bold('Local Context:')}\n${localFiles.map((f) => `  • ${f}`).join('\n')}`,
+      );
+    }
+
+    if (repoFiles.length > 0) {
+      sections.push(
+        `${chalk.bold('Repository Context:')}\n${repoFiles.map((f) => `  • ${f}`).join('\n')}`,
+      );
+    }
+
+    if (extraPrompt) {
+      sections.push(`${chalk.bold('Extra Prompt:')}\n  "${chalk.italic(extraPrompt)}"`);
+    }
+
+    if (sections.length === 0) {
+      sections.push(chalk.dim('No extra context provided.'));
+    }
+
+    Display.box(sections.join('\n\n'), 'Context & Instructions', 'blue');
   }
 
   private static async buildContextPrompt(
@@ -88,14 +136,13 @@ export class ReviewOrchestrator {
     contextPrompt: string,
   ): Promise<void> {
     const reviewSpinner = Display.spinner('Connecting to AI tool...');
-    Display.info('\n🤖 Starting review with AI tool...');
-    Display.info('────────────────────────────────────────────────────────');
 
     await new Promise<void>((resolve, reject) => {
       let firstChunk = true;
       const stopSpinnerOnStart = () => {
         if (firstChunk) {
           reviewSpinner.stop();
+          Display.section('AI Analysis Response');
           firstChunk = false;
         }
       };
@@ -115,15 +162,17 @@ export class ReviewOrchestrator {
         },
         onClose: (code: number | null) => {
           if (code === 0) {
-            Display.info('\n────────────────────────────────────────────────────────');
-            Display.success('Analysis completed');
+            console.log('\n');
+            Display.success('Analysis completed successfully');
             resolve();
           } else {
+            console.log('\n');
             reviewSpinner.fail('AI analysis failed');
             reject(new Error(`AI process exited with code ${String(code)}`));
           }
         },
         onError: (error: Error) => {
+          console.log('\n');
           reviewSpinner.fail('AI analysis failed');
           reject(error);
         },
