@@ -1,12 +1,12 @@
-import { confirm, input, select } from '@inquirer/prompts';
-import { AI_TOOLS } from '../../constants/ai.constant.js';
-import { DEFAULT_MAX_DIFF_CHANGES } from '../../constants/ai.constant.js';
-import { FEEDBACK_STYLES } from '../../constants/feedback.constant.js';
-import { Display } from '../../utils/display.util.js';
-import { ToolValidator } from '../../utils/tool-validator.util.js';
-import type { AiToolKey } from '../../types/ai-tool-key.type.js';
-import type { FeedbackStyle } from '../../types/feedback-style.type.js';
-import type { MosesConfig } from '../../types/moses-config.type.js';
+import { AI_TOOLS } from '../../../constants/ai.constant.js';
+import { FEEDBACK_STYLES } from '../../../constants/feedback.constant.js';
+import { Display } from '../../../utils/display.util.js';
+import { ToolValidator } from '../../../utils/tool-validator.util.js';
+import { Prompt } from '../../../utils/prompt.util.js';
+import { diffLimitSchema } from '../../../validators/diff-limit.validator.js';
+import type { AiToolKey } from '../../../types/ai-tool-key.type.js';
+import type { FeedbackStyle } from '../../../types/feedback-style.type.js';
+import type { MosesConfig } from '../../../types/moses-config.type.js';
 
 export interface AiSetupData {
   tool: AiToolKey;
@@ -36,7 +36,7 @@ export class AiWizard {
 
   static async chooseAiTool(existingTool: AiToolKey | undefined): Promise<AiToolKey> {
     while (true) {
-      const chosen = await select({
+      const chosen = await Prompt.select<AiToolKey>({
         message: 'Choose the AI tool for review:',
         choices: AI_TOOLS.map((tool) => ({ name: tool.name, value: tool.key })),
         default: existingTool,
@@ -59,7 +59,7 @@ export class AiWizard {
       Display.error(`${toolInfo.name} not found!`);
       Display.info(`\n📦 Install with:\n   ${validation.installCmd ?? toolInfo.install}`);
       Display.info(`\n📖 Documentation: ${validation.installUrl}\n`);
-      const retry = await confirm({
+      const retry = await Prompt.confirm({
         message: 'Do you want to choose another tool?',
         default: true,
       });
@@ -74,26 +74,19 @@ export class AiWizard {
   ): Promise<FeedbackStyle> {
     const defaultStyle =
       FEEDBACK_STYLES.find((item) => item.key === existingStyle)?.key ?? FEEDBACK_STYLES[1].key;
-    return select({
+
+    return Prompt.select<FeedbackStyle>({
       message: 'Choose MR feedback style:',
       choices: FEEDBACK_STYLES.map((item) => ({ name: item.label, value: item.key })),
-      default: defaultStyle,
+      default: defaultStyle as FeedbackStyle,
     });
   }
 
   static async chooseMaxDiffChanges(existingLimit: number | undefined): Promise<number> {
-    const fallback =
-      typeof existingLimit === 'number' && Number.isInteger(existingLimit) && existingLimit > 0
-        ? existingLimit
-        : DEFAULT_MAX_DIFF_CHANGES;
-    while (true) {
-      const value = await input({
-        message: 'Maximum allowed diff changes before interrupting validation:',
-        default: String(fallback),
-      });
-      const parsed = Number.parseInt(value, 10);
-      if (Number.isInteger(parsed) && parsed > 0) return parsed;
-      Display.error('Invalid value. Please inform a positive integer.');
-    }
+    return Prompt.ask<number>({
+      message: 'Maximum allowed diff changes before interrupting validation:',
+      default: String(existingLimit),
+      schema: diffLimitSchema,
+    });
   }
 }

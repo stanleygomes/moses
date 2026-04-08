@@ -1,6 +1,6 @@
-import { CONFIG_VERSION } from '../../constants/app.constant.js';
-import { DEFAULT_OUTPUT_DIR } from '../../constants/paths.constant.js';
-import type { MosesConfig } from '../../types/moses-config.type.js';
+import { CONFIG_VERSION } from '../../../constants/app.constant.js';
+import { DEFAULT_OUTPUT_DIR } from '../../../constants/paths.constant.js';
+import type { MosesConfig } from '../../../types/moses-config.type.js';
 import type { GitlabSetupData } from './gitlab-wizard.js';
 import type { AiSetupData } from './ai-wizard.js';
 
