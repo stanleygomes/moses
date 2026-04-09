@@ -20,6 +20,7 @@ export class GitlabSetupWizard {
 
   static async chooseGitlabBaseUrl(): Promise<string> {
     const gitlabType = await GitlabSetupWizard.promptGitlabType();
+
     if (gitlabType === 'default') {
       return 'https://gitlab.com';
     }

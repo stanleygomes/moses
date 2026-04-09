@@ -9,9 +9,11 @@ export class AiToolUtil {
 
   static getByKeyOrThrow(toolKey: AiToolKey): AiToolDefinition {
     const tool = AiToolUtil.findByKey(toolKey);
+
     if (!tool) {
       throw new Error(`Unsupported AI tool: ${String(toolKey)}`);
     }
+
     return tool;
   }
 }

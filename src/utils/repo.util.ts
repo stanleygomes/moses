@@ -7,10 +7,6 @@ export interface FileContent {
 }
 
 export class RepoUtil {
-  /**
-   * Reads multiple files from a folder based on a list of patterns.
-   * Returns an array of objects containing the relative path and the trimmed content.
-   */
   static async readFiles(folder: string, patterns: string[]): Promise<FileContent[]> {
     const results: FileContent[] = [];
 
