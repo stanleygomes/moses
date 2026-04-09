@@ -3,10 +3,6 @@ import path from 'node:path';
 import { CONTEXT_FILE_PATTERNS } from '../constants/context.constant.js';
 import type { RepoContextResult } from '../types/repo-context-result.type.js';
 
-/**
- * Scans a repository directory for files matching the context patterns.
- * Returns the contents of these files formatted for LLM context.
- */
 export class RepoScanner {
   static async scanRepoForContext(repoPath: string): Promise<RepoContextResult> {
     const contents: string[] = [];

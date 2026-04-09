@@ -49,7 +49,6 @@ moses validate https://gitlab.your-domain.com/group/project/-/merge_requests/123
 | `moses validate <url>`        | Fetches and analyzes a Merge Request, providing AI feedback  |
 | `moses gitlab list`           | Lists all your configured GitLab instances                   |
 | `moses gitlab default`        | Switches the active default GitLab instance                  |
-| `moses update`                | Updates the CLI to the latest version automatically          |
 | `moses config feedback-style` | Updates the AI's feedback tone (friendly, pragmatic, etc.)   |
 | `moses config diff-limit`     | Changes the maximum allowed line changes in a single diff    |
 | `moses config reset`          | Wipes all local configurations and starts fresh              |
