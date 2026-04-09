@@ -1,6 +1,6 @@
 import { ConfigStore } from '../store/config.store.js';
 import { DisplayUtil } from '../utils/display.util.js';
-import { GitlabInstanceManager } from '../services/gitlab/gitlab-instance-manager.service.js';
+import { GitlabInstanceManager } from '../services/gitlab-instance-manager.service.js';
 
 export class GitlabSwitchModule {
   static async run(): Promise<void> {

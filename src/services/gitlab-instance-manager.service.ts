@@ -1,10 +1,10 @@
-import { DisplayUtil } from '../../utils/display.util.js';
-import { Prompt } from '../../utils/prompt.util.js';
-import { ConfigUpdateService } from '../config-update.service.js';
-import { ErrorUtil } from '../../utils/error.util.js';
-import { TokenUtil } from '../../utils/token.util.js';
-import type { MosesConfig } from '../../types/moses-config.type.js';
-import type { GitlabInstance } from '../../types/gitlab-instance.type.js';
+import { DisplayUtil } from '../utils/display.util.js';
+import { Prompt } from '../utils/prompt.util.js';
+import { ConfigUpdateService } from './config-update.service.js';
+import { ErrorUtil } from '../utils/error.util.js';
+import { TokenUtil } from '../utils/token.util.js';
+import type { MosesConfig } from '../types/moses-config.type.js';
+import type { GitlabInstance } from '../types/gitlab-instance.type.js';
 
 export class GitlabInstanceManager {
   static displayNoInstances(): void {

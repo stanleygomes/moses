@@ -1,10 +1,10 @@
-import { HttpUtil } from '../../utils/http.util.js';
-import { GitlabClient } from '../../api/gitlab/gitlab.client.js';
-import { ConfigStore } from '../../store/config.store.js';
-import { DisplayUtil } from '../../utils/display.util.js';
-import { ErrorUtil } from '../../utils/error.util.js';
-import { UrlParser } from '../../utils/url.util.js';
-import type { MosesConfig } from '../../types/moses-config.type.js';
+import { HttpUtil } from '../utils/http.util.js';
+import { GitlabClient } from '../api/gitlab/gitlab.client.js';
+import { ConfigStore } from '../store/config.store.js';
+import { DisplayUtil } from '../utils/display.util.js';
+import { ErrorUtil } from '../utils/error.util.js';
+import { UrlParser } from '../utils/url.util.js';
+import type { MosesConfig } from '../types/moses-config.type.js';
 
 export class GitlabDataProvider {
   static async fetchMrData(url: string, config: MosesConfig) {

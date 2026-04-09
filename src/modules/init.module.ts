@@ -3,7 +3,7 @@ import { AiSetupWizard } from '../services/ai-setup.service.js';
 import { ConfigInitializer } from '../services/config-init.service.js';
 import { ConfigSummary } from '../services/config-summary.service.js';
 import { ContextManager } from '../services/context-manager.service.js';
-import { GitlabSetupWizard } from '../services/gitlab/gitlab-setup.service.js';
+import { GitlabSetupWizard } from '../services/gitlab-setup.service.js';
 import { ConfigStore } from '../store/config.store.js';
 import { DisplayUtil } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';

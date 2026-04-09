@@ -1,11 +1,11 @@
-import { HttpUtil } from '../../utils/http.util.js';
+import { HttpUtil } from '../utils/http.util.js';
 import { z } from 'zod';
-import { UrlParser } from '../../utils/url.util.js';
-import { DisplayUtil } from '../../utils/display.util.js';
-import { Prompt } from '../../utils/prompt.util.js';
-import { GitlabClient } from '../../api/gitlab/gitlab.client.js';
-import type { MosesConfig } from '../../types/moses-config.type.js';
-import type { GitlabSetupData } from '../../types/gitlab-setup-data.type.js';
+import { UrlParser } from '../utils/url.util.js';
+import { DisplayUtil } from '../utils/display.util.js';
+import { Prompt } from '../utils/prompt.util.js';
+import { GitlabClient } from '../api/gitlab/gitlab.client.js';
+import type { MosesConfig } from '../types/moses-config.type.js';
+import type { GitlabSetupData } from '../types/gitlab-setup-data.type.js';
 
 export class GitlabSetupWizard {
   static async promptGitlabSetup(existingConfig: MosesConfig | null): Promise<GitlabSetupData> {
