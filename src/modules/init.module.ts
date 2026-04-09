@@ -1,8 +1,12 @@
 import { MESSAGES } from '../constants/messages.constant.js';
-import { Display } from '../utils/display.util.js';
+import { AiSetupWizard } from '../services/ai-setup.service.js';
+import { ConfigInitializer } from '../services/config-init.service.js';
+import { ConfigSummary } from '../services/config-summary.service.js';
+import { ContextManager } from '../services/context-manager.service.js';
+import { GitlabSetupWizard } from '../services/gitlab/gitlab-setup.service.js';
 import { ConfigStore } from '../store/config.store.js';
+import { Display } from '../utils/display.util.js';
 import { Prompt } from '../utils/prompt.util.js';
-import { SetupWizardFlow } from '../services/wizard-flow.service.js';
 
 export class InitModule {
   static async run(): Promise<void> {
@@ -21,6 +25,13 @@ export class InitModule {
       return;
     }
 
-    await SetupWizardFlow.run(existingConfig);
+    const gitlabData = await GitlabSetupWizard.promptGitlabSetup(existingConfig);
+    const aiData = await AiSetupWizard.promptAiSetup(existingConfig);
+
+    const config = ConfigInitializer.build(gitlabData, aiData, existingConfig);
+    const configPath = await ConfigStore.set(config);
+    const contextInfo = await ContextManager.ensureDefaultContextFiles();
+
+    ConfigSummary.display(configPath, contextInfo);
   }
 }
