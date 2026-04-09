@@ -43,7 +43,7 @@ export class ReviewOrchestrator {
         );
       }
 
-      await ReviewOrchestrator.executeAiReview(config, markdown, contextPrompt);
+      await ReviewOrchestrator.executeAiReview(config, markdown, contextPrompt, options.model);
     } catch (error: unknown) {
       markdownSpinner.fail('Failed to generate markdown or run AI review.');
       DisplayUtil.error(ErrorUtil.getMessage(error, 'Unknown error during AI review.'));
@@ -145,6 +145,7 @@ export class ReviewOrchestrator {
     config: MosesConfig,
     markdown: string,
     contextPrompt: string,
+    model?: string,
   ): Promise<void> {
     const reviewSpinner = DisplayUtil.spinner('Connecting to AI tool...');
 
@@ -162,6 +163,7 @@ export class ReviewOrchestrator {
         options: {
           feedbackStyle: config.ai?.feedbackStyle,
           contextPrompt,
+          model,
         },
         onStdout: (chunk: string) => {
           stopSpinnerOnStart();

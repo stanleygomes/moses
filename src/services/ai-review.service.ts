@@ -32,7 +32,13 @@ ${markdownContent}`;
     const tool = AiToolUtil.getByKeyOrThrow(toolKey);
 
     const prompt = AiReviewService.buildPrompt(markdownContent, handlers.options);
-    const args = [...tool.args, prompt];
+    const args = [...tool.args];
+
+    if (handlers.options?.model) {
+      args.push('--model', handlers.options.model);
+    }
+
+    args.push(prompt);
 
     const child = spawn(tool.command, args, {
       stdio: ['ignore', 'pipe', 'pipe'],

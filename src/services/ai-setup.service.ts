@@ -1,10 +1,12 @@
-import { AI_TOOLS, DEFAULT_MAX_DIFF_CHANGES } from '../constants/ai.constant.js';
+import { AI_TOOLS, DEFAULT_MAX_DIFF_CHANGES, TOOL_MODELS } from '../constants/ai.constant.js';
 import { DisplayUtil } from '../utils/display.util.js';
 import { ToolValidator } from '../utils/tool-validator.util.js';
 import { Prompt } from '../utils/prompt.util.js';
 import { AiToolUtil } from '../utils/ai-tool.util.js';
 import { FeedbackStyleUtil } from '../utils/feedback-style.util.js';
 import { diffLimitSchema } from '../validators/diff-limit.validator.js';
+import { aiModelSchema } from '../validators/ai-model.validator.js';
+import { ContextManager } from './context-manager.service.js';
 import type { AiToolKey } from '../types/ai-tool-key.type.js';
 import type { FeedbackStyle } from '../types/feedback-style.type.js';
 import type { MosesConfig } from '../types/moses-config.type.js';
@@ -32,6 +34,48 @@ export class AiSetupWizard {
     );
 
     return { tool, feedbackStyle, maxDiffChanges };
+  }
+
+  static async chooseModel(
+    tool: AiToolKey,
+    currentModel: string | null | undefined,
+  ): Promise<string | null> {
+    const models = TOOL_MODELS[tool] || [];
+    if (models.length === 0) return null;
+
+    const choices = [
+      { name: 'Default (let the CLI decide)', value: null },
+      ...models,
+      { name: 'Other (type manually)', value: 'other' },
+    ];
+
+    const selected = await Prompt.select<string | null>({
+      message: `Choose the model for ${tool}:`,
+      choices,
+      default: currentModel === undefined ? null : currentModel,
+    });
+
+    if (selected === 'other') {
+      return Prompt.ask<string>({
+        message: 'Type the model name:',
+        schema: aiModelSchema,
+      });
+    }
+
+    return selected;
+  }
+
+  static async chooseSkillsFile(): Promise<string | undefined> {
+    const instructionFiles = await ContextManager.getAvailableInstructionFiles();
+    if (instructionFiles.length === 0) return undefined;
+
+    return Prompt.select({
+      message: 'Which skills file would you like to use for this review?',
+      choices: [
+        { name: 'None (use repository context only)', value: undefined },
+        ...instructionFiles.map((file) => ({ name: file, value: file })),
+      ],
+    });
   }
 
   static async chooseAiTool(existingTool: AiToolKey | undefined): Promise<AiToolKey> {

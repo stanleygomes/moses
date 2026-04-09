@@ -17,7 +17,6 @@ export class ConfigInitService {
       ai: {
         tool: ai.tool,
         customCommand: null,
-        model: null,
         feedbackStyle: ai.feedbackStyle,
         maxDiffChanges: ai.maxDiffChanges,
       },
@@ -42,7 +41,6 @@ export class ConfigInitService {
         ...baseConfig.ai,
         tool: ai.tool,
         customCommand: null,
-        model: null,
         feedbackStyle: ai.feedbackStyle,
         maxDiffChanges: ai.maxDiffChanges,
       },
