@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.3.0](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.2.0...moses-cli-v1.3.0) (2026-04-09)
+
+
+### Features
+
+* add instruction files support for AI reviews and introduce config skills command to manage them ([b28e147](https://github.com/stanleygomes/moses-cli/commit/b28e147d90215a1afc9e11dc6b2ce3356fd0944c))
+* implement dynamic model selection and support for per-review model overrides via CLI or interactive wizard ([3556dbc](https://github.com/stanleygomes/moses-cli/commit/3556dbcd5a20318023f40f4499c7909d6be45f96))
+
+
+### Code Refactoring
+
+* centralize GitLab configuration updates and remove redundant wizard and error handling logic ([33ba646](https://github.com/stanleygomes/moses-cli/commit/33ba646fd31472fa0a82aceb8f5f16dc4dc53e35))
+* consolidate AI services into a single AiService module and define unified configuration types ([891e854](https://github.com/stanleygomes/moses-cli/commit/891e8549a23e32808ef7df6fdcd3190d92f9c1e0))
+* consolidate configuration updates into ConfigUpdateService and unify error handling with ErrorUtil while enhancing TokenUtil masking capabilities. ([0c4cfcc](https://github.com/stanleygomes/moses-cli/commit/0c4cfccd6e6d4521fa076d36f2a2e58202001271))
+* flatten gitlab service directory structure and introduce SetupWizardFlow service ([3fb6aaa](https://github.com/stanleygomes/moses-cli/commit/3fb6aaaf221f929547e226e0bf6dae9f6c8aa716))
+* inline DiffLimitManager logic into SetDiffLimitModule and remove unused service files ([0ab564b](https://github.com/stanleygomes/moses-cli/commit/0ab564b36f59eacfd6cf7403cf287d453023672f))
+* inline wizard flow logic into InitModule and remove SetupWizardFlow service ([7a3e742](https://github.com/stanleygomes/moses-cli/commit/7a3e742132d123398b838dbb6f6026be56fad891))
+* migrate services to utilities and define BuildMergeRequestMarkdownInput type ([63d21b7](https://github.com/stanleygomes/moses-cli/commit/63d21b754c6c6a04bb4ec398b569207c0ac48851))
+* modularize GitLab API client and extract HTTP/async utilities ([afd4911](https://github.com/stanleygomes/moses-cli/commit/afd4911bc798a7fef0caaecb99070f9b1d3c10b1))
+* remove interactive prompt for automatic repository downloads ([9ff0467](https://github.com/stanleygomes/moses-cli/commit/9ff04673050ae0aae39da91ede8ed0aac72c0a42))
+* remove redundant JSDoc comments and improve code formatting across utility and service modules ([6b38eca](https://github.com/stanleygomes/moses-cli/commit/6b38eca53cf61c516874f0328c059857d3bb2d19))
+* remove update functionality and cleanup codebase ([749d383](https://github.com/stanleygomes/moses-cli/commit/749d38345cbd504eaae0a9c3e0bef7ffa8c0c9c2))
+* rename config services, remove ConfigValidator, and integrate ConfigStore directly into ValidateModule ([1204f99](https://github.com/stanleygomes/moses-cli/commit/1204f992399b553e3f751390a06e79f0a86cc0ed))
+* rename Display class to DisplayUtil throughout the codebase ([5415d88](https://github.com/stanleygomes/moses-cli/commit/5415d881874582cd6cc9a9cb66abed4deff6c6f0))
+* replace RepoScanner service with RepoUtil and migrate usage limit logic to utility module ([24fb5e4](https://github.com/stanleygomes/moses-cli/commit/24fb5e48f13c7157d987638d862aa6abafdb2026))
+
 ## [1.2.0](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.1.0...moses-cli-v1.2.0) (2026-04-08)
 
 
