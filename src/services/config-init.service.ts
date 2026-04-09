@@ -4,7 +4,7 @@ import type { MosesConfig } from '../types/moses-config.type.js';
 import type { GitlabSetupData } from '../types/gitlab-setup-data.type.js';
 import type { AiSetupData } from './ai-setup.service.js';
 
-export class ConfigInitializer {
+export class ConfigInitService {
   static build(
     gitlab: GitlabSetupData,
     ai: AiSetupData,

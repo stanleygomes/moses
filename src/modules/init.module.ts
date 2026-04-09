@@ -1,7 +1,7 @@
 import { MESSAGES } from '../constants/messages.constant.js';
 import { AiSetupWizard } from '../services/ai-setup.service.js';
-import { ConfigInitializer } from '../services/config-init.service.js';
-import { ConfigSummary } from '../services/config-summary.service.js';
+import { ConfigInitService } from '../services/config-init.service.js';
+import { ConfigSummaryService } from '../services/config-summary.service.js';
 import { ContextManager } from '../services/context-manager.service.js';
 import { GitlabSetupWizard } from '../services/gitlab-setup.service.js';
 import { ConfigStore } from '../store/config.store.js';
@@ -28,10 +28,10 @@ export class InitModule {
     const gitlabData = await GitlabSetupWizard.promptGitlabSetup(existingConfig);
     const aiData = await AiSetupWizard.promptAiSetup(existingConfig);
 
-    const config = ConfigInitializer.build(gitlabData, aiData, existingConfig);
+    const config = ConfigInitService.build(gitlabData, aiData, existingConfig);
     const configPath = await ConfigStore.set(config);
     const contextInfo = await ContextManager.ensureDefaultContextFiles();
 
-    ConfigSummary.display(configPath, contextInfo);
+    ConfigSummaryService.display(configPath, contextInfo);
   }
 }
