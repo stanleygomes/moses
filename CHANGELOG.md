@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.3.0...moses-cli-v1.3.1) (2026-04-09)
+
+
+### Code Refactoring
+
+* update context loading to include base-prompt, disable model selection, and enforce Portuguese responses ([f7fed1c](https://github.com/stanleygomes/moses-cli/commit/f7fed1c366e6a611b4a8152a7f7288ba763cb960))
+
 ## [1.3.0](https://github.com/stanleygomes/moses-cli/compare/moses-cli-v1.2.0...moses-cli-v1.3.0) (2026-04-09)
 
 
