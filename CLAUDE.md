@@ -4,11 +4,12 @@ CLI buddy to help with code review of GitLab Merge Requests using AI tools.
 
 ## Development Commands
 
-- **Build**: `go build -o moses ./cmd/moses`
-- **Run**: `go run ./cmd/moses`
-- **Test**: `go test ./...`
-- **Lint**: `golangci-lint run`
-- **Format**: `gofmt -s -w .`
+- **Build**: `make build` (Output: `./bin/moses`)
+- **Run**: `make run`
+- **Test**: `make test`
+- **Lint**: `make lint`
+- **Format**: `make fmt`
+- **Clean**: `make clean`
 
 ## CLI Commands (To Implement)
 
@@ -30,11 +31,14 @@ CLI buddy to help with code review of GitLab Merge Requests using AI tools.
 - **Context Gathering**: Scan for instructions in `copilot-instructions.md`, `.github/copilot-instructions.md`, `CLAUDE.md`, `.clauderc`, and `README.md`.
 - **AI Tools**: Must support streaming output for a real-time experience.
 
-## Internal Structure (Proposed)
+## Project Structure
 
-- `cmd/moses/`: CLI entry point and command definitions (Cobra).
-- `internal/config/`: Configuration management.
-- `internal/gitlab/`: GitLab API client.
-- `internal/ai/`: AI tool wrappers (Copilot, Gemini).
-- `internal/ui/`: Terminal UI and output formatting.
-- `pkg/`: Publicly reusable packages (if any).
+- `cmd/moses/main.go`: Application entry point.
+- `cmd/`: CLI command definitions (Cobra).
+- `internal/`: Private library code (logic, API clients, etc.).
+  - `internal/config/`: Configuration management.
+  - `internal/gitlab/`: GitLab API client.
+  - `internal/ai/`: AI tool wrappers.
+  - `internal/ui/`: Terminal UI and formatting.
+- `pkg/`: Publicly reusable packages (optional).
+

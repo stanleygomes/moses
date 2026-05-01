@@ -6,6 +6,7 @@ pnpm-debug.log*
 .DS_Store
 
 dist/
+bin/
 
 .vscode
 .idea
