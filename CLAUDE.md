@@ -23,6 +23,7 @@ CLI buddy to help with code review of GitLab Merge Requests using AI tools.
 ## Project Guidelines
 
 - **Refactor Goal**: Port the entire logic from the Node.js implementation to a performant and maintainable Go codebase.
+- **Language**: All code, comments, documentation, and CLI outputs must be in **English**.
 - **Style**: Follow standard Go conventions. Use `PascalCase` for exported symbols and `camelCase` for internal ones.
 - **Error Handling**: Check every error. Wrap errors with context: `fmt.Errorf("context: %w", err)`.
 - **CLI Framework**: Use `spf13/cobra` for command structure and `spf13/viper` for configuration.
